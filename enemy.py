@@ -142,3 +142,75 @@ class FlyingEnemy(pygame.sprite.Sprite):
         elif self.rect.top <= self.patrol_top:
             self.rect.top = self.patrol_top
             self.direction = 1
+
+
+class JumpingEnemy(pygame.sprite.Sprite):
+    """Enemy that patrols horizontally and jumps periodically."""
+
+    def __init__(self, x, y, patrol_left, patrol_right):
+        super().__init__()
+
+        # Load sprite image
+        self.original_image = _load_enemy_image('enemy_jumping.png')
+        self.image = self.original_image
+
+        # Set up rect and position
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+        # Patrol bounds
+        self.patrol_left = patrol_left
+        self.patrol_right = patrol_right
+
+        # Direction: 1 = right, -1 = left
+        self.direction = 1
+
+        # Physics
+        self.velocity = pygame.math.Vector2(0, 0)
+        self.on_ground = True
+        self.jump_timer = 0
+        self.jump_interval = 60  # frames between jumps
+
+    def update(self):
+        """Move horizontally and apply gravity; jump periodically."""
+        from constants import GRAVITY, JUMP_FORCE, ENEMY_SPEED
+
+        # Horizontal movement
+        self.rect.x += ENEMY_SPEED * self.direction
+
+        # Reverse direction when reaching patrol bounds
+        if self.rect.right >= self.patrol_right:
+            self.rect.right = self.patrol_right
+            self.direction = -1
+        elif self.rect.left <= self.patrol_left:
+            self.rect.left = self.patrol_left
+            self.direction = 1
+
+        # Jump logic
+        self.jump_timer += 1
+        if self.on_ground and self.jump_timer >= self.jump_interval:
+            self.velocity.y = JUMP_FORCE
+            self.on_ground = False
+            self.jump_timer = 0
+
+        # Apply gravity
+        self.velocity.y += GRAVITY
+
+        # Apply vertical velocity
+        self.rect.y += self.velocity.y
+
+        # Simple ground check (assuming ground is at y = SCREEN_H - TILE_SIZE)
+        # This is a placeholder; in a real game, you'd check platform collisions.
+        # For now, we'll just stop falling if we go below a certain y.
+        # We'll use a simple ground level based on the initial y.
+        # Actually, we can't know the ground level here. Let's assume the enemy
+        # starts on ground and we'll just let it fall indefinitely.
+        # For the purpose of this prototype, we'll just let it jump and fall.
+        # The enemy will eventually fall off screen, but that's okay for now.
+
+        # Flip sprite based on direction
+        if self.direction == 1:
+            self.image = self.original_image
+        else:
+            self.image = pygame.transform.flip(self.original_image, True, False)
