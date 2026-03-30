@@ -338,3 +338,7 @@ Raw output:
 ### Cycle 14 — #95: Enemy speed increase effect does not revert after duration
 
 **REQUEST_CHANGES** — The implementation of the enemy speed increase effect in effects.py meets the acceptance criteria by scheduling a revert via the on_expire callback. However, the _schedule_revert method is empty and not used, which is a minor inconsistency but not a critical bug. The main issue is that the effect manager's original_enemy_speeds dictionary is not properly initialized when the effect is triggered multiple times, potentially causing incorrect reverts. This needs to be fixed to ensure enemy speeds revert correctly after each effect duration.
+
+### Cycle 15 — #97: Enemy speed revert logic may fail with multiple sequential effects
+
+**REQUEST_CHANGES** — The implementation partially addresses the issue by capturing current speeds at effect application, but it still uses a class-level variable `original_enemy_speeds` that is never used and could cause interference. The revert logic correctly uses local variables in the closure, but the class variable remains a potential source of bugs if other code references it. Additionally, the gravity change effect incorrectly modifies the global constants module, which could cause cross-effect interference.
