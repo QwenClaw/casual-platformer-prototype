@@ -1,12 +1,13 @@
 import pygame
 
 
-def resolve_platform_collisions(sprite, platforms):
+def resolve_platform_collisions(sprite, platforms, gravity_direction=1):
     """Resolve collisions between sprite and platforms using axis-separated resolution.
 
     Args:
         sprite: Sprite with rect and velocity attributes
         platforms: List of pygame.Rect representing collision surfaces
+        gravity_direction: 1 for normal gravity, -1 for reversed
 
     Returns:
         bool: True if sprite is on ground after resolution
@@ -26,13 +27,22 @@ def resolve_platform_collisions(sprite, platforms):
     sprite.rect.y += int(sprite.velocity.y)
     for platform in platforms:
         if sprite.rect.colliderect(platform):
-            if sprite.velocity.y > 0:  # Falling
-                sprite.rect.bottom = platform.top
-                sprite.velocity.y = 0
-                on_ground = True
-            elif sprite.velocity.y < 0:  # Jumping/hitting ceiling
-                sprite.rect.top = platform.bottom
-                sprite.velocity.y = 0
+            if gravity_direction > 0:  # Normal gravity
+                if sprite.velocity.y > 0:  # Falling
+                    sprite.rect.bottom = platform.top
+                    sprite.velocity.y = 0
+                    on_ground = True
+                elif sprite.velocity.y < 0:  # Jumping/hitting ceiling
+                    sprite.rect.top = platform.bottom
+                    sprite.velocity.y = 0
+            else:  # Reversed gravity
+                if sprite.velocity.y < 0:  # Falling (upward)
+                    sprite.rect.top = platform.bottom
+                    sprite.velocity.y = 0
+                    on_ground = True
+                elif sprite.velocity.y > 0:  # Jumping (downward)/hitting floor
+                    sprite.rect.bottom = platform.top
+                    sprite.velocity.y = 0
 
     return on_ground
 
@@ -50,11 +60,16 @@ def check_enemy_collision(player, enemies):
     """
     for enemy in enemies:
         if player.rect.colliderect(enemy.rect):
-            # Check if player is falling and above enemy's midpoint
-            if player.velocity.y > 0 and player.rect.bottom <= enemy.rect.centery:
-                return (enemy, True)  # Stomp
-            else:
-                return (enemy, False)  # Hit from side or below
+            # Check if player is falling toward enemy based on gravity direction
+            if player.gravity_direction > 0:  # Normal gravity
+                # Player falling down, stomp if above enemy midpoint
+                if player.velocity.y > 0 and player.rect.bottom <= enemy.rect.centery:
+                    return (enemy, True)  # Stomp
+            else:  # Reversed gravity
+                # Player falling up, stomp if below enemy midpoint
+                if player.velocity.y < 0 and player.rect.top >= enemy.rect.centery:
+                    return (enemy, True)  # Stomp
+            return (enemy, False)  # Hit from side or wrong direction
     return (None, False)
 
 

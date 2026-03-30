@@ -22,6 +22,17 @@ GREEN = (0, 200, 0)
 RED = (200, 0, 0)
 YELLOW = (255, 255, 0)
 GRAY = (128, 128, 128)
+DARK_GREEN = (0, 150, 0)
+ORANGE = (255, 165, 0)
+PURPLE = (128, 0, 128)
+CYAN = (0, 255, 255)
+DARK_GRAY = (64, 64, 64)
+BROWN = (139, 69, 19)
 
 # Enemy constants
 ENEMY_SPEED = 2
+FAST_ENEMY_SPEED = 4
+FLYING_ENEMY_SPEED = 2
+
+# Number of levels
+NUM_LEVELS = 7
