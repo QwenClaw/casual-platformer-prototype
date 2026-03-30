@@ -190,7 +190,33 @@ class EffectManager:
         self.add_effect(effect)
 
     def _schedule_revert(self, effect_type, *args):
-        """Schedule revert of an effect after duration."""
-        # For simplicity, we'll handle reverts in the effect's update method
-        # by checking the effect name and applying revert logic
-        pass
+        """Schedule revert of an effect after duration.
+        
+        Args:
+            effect_type: Type of effect to revert ('gravity', 'enemy_speed', 'platforms')
+            *args: Additional arguments needed for revert (e.g., original values)
+        """
+        if effect_type == 'gravity':
+            original_gravity = args[0] if args else 0.8
+            def revert_gravity():
+                import constants
+                constants.GRAVITY = original_gravity
+            return revert_gravity
+        elif effect_type == 'enemy_speed':
+            original_speeds = args[0] if args else {}
+            def revert_enemy_speeds():
+                import constants
+                constants.ENEMY_SPEED = original_speeds.get('ENEMY_SPEED', 2)
+                constants.FAST_ENEMY_SPEED = original_speeds.get('FAST_ENEMY_SPEED', 4)
+                constants.FLYING_ENEMY_SPEED = original_speeds.get('FLYING_ENEMY_SPEED', 2)
+            return revert_enemy_speeds
+        elif effect_type == 'platforms':
+            original_positions = args[0] if args else []
+            level = self.game.level_manager.get_current_level()
+            def revert_platforms():
+                for i, platform in enumerate(level.platforms):
+                    if i < len(original_positions):
+                        platform.x, platform.y = original_positions[i]
+            return revert_platforms
+        else:
+            return lambda: None  # No-op for unknown effect types
