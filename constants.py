@@ -36,3 +36,14 @@ FLYING_ENEMY_SPEED = 2
 
 # Number of levels
 NUM_LEVELS = 7
+
+# Tile types for rendering
+TILE_GRASS = 0
+TILE_DIRT = 1
+TILE_PLATFORM = 2
+
+# Game states
+STATE_PLAYING = 0
+STATE_LEVEL_COMPLETE = 1
+STATE_DEAD = 2
+STATE_GAME_COMPLETE = 3
