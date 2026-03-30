@@ -128,3 +128,7 @@ Raw output:
 ### Cycle 23 — #32: Add squash/stretch animation on landing
 
 **REQUEST_CHANGES** — The implementation adds a continuous squash/stretch animation based on velocity, but the issue requires a distinct animation triggered specifically on landing with a fixed duration (5-10 frames). The current animation is always active and lacks a clear landing trigger with the specified frame count.
+
+### Cycle 24 — #33: Add particle effects on enemy death
+
+**REQUEST_CHANGES** — The implementation adds a text-based effect system for HUD display but does not implement the particle effects required by the acceptance criteria. No particle spawning, physics, or rendering code was added for enemy death effects. The existing Effect/EffectManager classes are for text overlays, not particle systems.
