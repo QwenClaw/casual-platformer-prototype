@@ -118,7 +118,7 @@ class Game:
         # Update player with current key states
         keys = pygame.key.get_pressed()
         level = self.level_manager.get_current_level()
-        jumped = self.player.update(keys, level.platforms)
+        jumped = self.player.update(keys, level.platforms, level.width)
 
         # Play jump sound if a jump occurred
         if jumped:
