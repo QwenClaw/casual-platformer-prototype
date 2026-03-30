@@ -4,18 +4,20 @@ import pygame
 class Effect:
     """Represents an active effect on the player."""
 
-    def __init__(self, name, color, duration=None):
+    def __init__(self, name, color, duration=None, on_expire=None):
         """Initialize an effect.
 
         Args:
             name: Display name of the effect
             color: RGB color tuple for HUD display
             duration: Duration in frames, or None for permanent until removed
+            on_expire: Optional callback to call when effect expires
         """
         self.name = name
         self.color = color
         self.duration = duration  # in frames, None means permanent
         self.active = True
+        self.on_expire = on_expire
 
     def update(self):
         """Update effect timer. Returns True if effect expired."""
@@ -23,6 +25,8 @@ class Effect:
             self.duration -= 1
             if self.duration <= 0:
                 self.active = False
+                if self.on_expire:
+                    self.on_expire()
                 return True
         return False
 
