@@ -84,3 +84,7 @@ Raw output:
 ### Cycle 12 — #19: 7. Basic Art Upgrade
 
 **REQUEST_CHANGES** — The implementation does not meet the acceptance criteria for the Basic Art Upgrade issue. The player and enemies remain placeholder colored rectangles, platforms are still drawn as green rectangles, and no tileset or background layers have been added. The code changes primarily add level progression and gravity mechanics rather than addressing the art requirements.
+
+### Cycle 13 — #18: 6. Score / Progress Tracking
+
+**REQUEST_CHANGES** — The implementation adds multiple levels, enemy types, and gravity mechanics, but fails to implement the core requirements of issue #18: score tracking, level timer, death counter, and UI display. None of these features are present in the code changes.
