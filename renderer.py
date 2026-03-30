@@ -15,7 +15,7 @@ class Renderer:
         self.font_large = pygame.font.SysFont(None, 48)
         self.font_small = pygame.font.SysFont(None, 32)
 
-    def draw(self, player, enemies, level, state, level_number, is_final_level):
+    def draw(self, player, enemies, level, state, level_number, is_final_level, active_effects=None):
         """Draw the complete game frame.
 
         Args:
@@ -25,6 +25,7 @@ class Renderer:
             state: Current game state (PLAYING, LEVEL_COMPLETE, DEAD, or GAME_COMPLETE)
             level_number: Current level number (1-indexed)
             is_final_level: Whether this is the final level
+            active_effects: List of active Effect objects (optional)
         """
         # Clear screen with sky color
         self.screen.fill(SKY_BLUE)
@@ -47,7 +48,7 @@ class Renderer:
         self.screen.blit(player.image, player.rect)
 
         # Draw HUD
-        self._draw_hud(level_number, player)
+        self._draw_hud(level_number, active_effects or [])
 
         # Draw overlay text based on state
         if state == 1:  # LEVEL_COMPLETE
@@ -59,23 +60,36 @@ class Renderer:
 
         pygame.display.flip()
 
-    def _draw_hud(self, level_number, player):
+    def _draw_hud(self, level_number, active_effects):
         """Draw the heads-up display.
 
         Args:
             level_number: Current level number
-            player: Player sprite (for gravity indicator)
+            active_effects: List of active Effect objects
         """
         # Draw level number
         level_text = self.font_small.render(f"Level {level_number}", True, BLACK)
         self.screen.blit(level_text, (10, 10))
 
-        # Draw gravity indicator
-        if player.gravity_direction > 0:
-            gravity_text = self.font_small.render("Gravity: Normal [G]", True, BLACK)
+        # Draw active effects
+        y_offset = 40
+        if active_effects:
+            # Draw effects header
+            effects_header = self.font_small.render("Effects:", True, BLACK)
+            self.screen.blit(effects_header, (10, y_offset))
+            y_offset += 25
+
+            # Draw each active effect with its color
+            for effect in active_effects:
+                duration_text = effect.get_duration_text()
+                effect_text = f"  {effect.name}{duration_text}"
+                text_surface = self.font_small.render(effect_text, True, effect.color)
+                self.screen.blit(text_surface, (10, y_offset))
+                y_offset += 25
         else:
-            gravity_text = self.font_small.render("Gravity: Reversed [G]", True, (255, 100, 0))
-        self.screen.blit(gravity_text, (10, 40))
+            # No active effects
+            no_effects_text = self.font_small.render("No active effects", True, (128, 128, 128))
+            self.screen.blit(no_effects_text, (10, y_offset))
 
     def _draw_overlay(self, text, color, subtitle):
         """Draw overlay text centered on screen.
