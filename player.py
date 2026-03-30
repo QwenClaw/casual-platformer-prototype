@@ -6,6 +6,7 @@ from constants import (
     MAX_FALL_SPEED,
     RED,
     SCREEN_W,
+    SCREEN_H,
 )
 from collision import resolve_platform_collisions
 
@@ -34,6 +35,9 @@ class Player(pygame.sprite.Sprite):
         self.velocity = pygame.math.Vector2(0, 0)
         self.on_ground = False
         self.alive = True
+
+        # Gravity direction: 1 = normal (down), -1 = reversed (up)
+        self.gravity_direction = 1
 
     def update(self, keys, platforms):
         """Update player state based on input and collisions.
@@ -69,22 +73,27 @@ class Player(pygame.sprite.Sprite):
                 if self.velocity.x > 0:
                     self.velocity.x = 0
 
-        # Handle jump input
-        if (
+        # Handle jump input - jump direction depends on gravity
+        jump_pressed = (
             keys[pygame.K_SPACE]
             or keys[pygame.K_UP]
             or keys[pygame.K_w]
-        ) and self.on_ground:
-            self.velocity.y = JUMP_FORCE
+        )
+        if jump_pressed and self.on_ground:
+            self.velocity.y = JUMP_FORCE * self.gravity_direction
             self.on_ground = False
 
-        # Apply gravity
-        self.velocity.y += GRAVITY
-        if self.velocity.y > MAX_FALL_SPEED:
+        # Apply gravity (direction-aware)
+        self.velocity.y += GRAVITY * self.gravity_direction
+
+        # Clamp fall speed
+        if self.gravity_direction > 0 and self.velocity.y > MAX_FALL_SPEED:
             self.velocity.y = MAX_FALL_SPEED
+        elif self.gravity_direction < 0 and self.velocity.y < -MAX_FALL_SPEED:
+            self.velocity.y = -MAX_FALL_SPEED
 
         # Resolve collisions using collision module
-        self.on_ground = resolve_platform_collisions(self, platforms)
+        self.on_ground = resolve_platform_collisions(self, platforms, self.gravity_direction)
 
         # Keep player within screen bounds
         if self.rect.left < 0:
@@ -94,10 +103,17 @@ class Player(pygame.sprite.Sprite):
             self.rect.right = SCREEN_W
             self.velocity.x = 0
 
+    def toggle_gravity(self):
+        """Toggle gravity direction."""
+        self.gravity_direction *= -1
+        # Give a small impulse in the new direction
+        self.velocity.y = 3 * self.gravity_direction
+        self.on_ground = False
+
+    def bounce(self):
+        """Bounce the player (after stomping an enemy)."""
+        self.velocity.y = self.BOUNCE_FORCE * self.gravity_direction
+
     def die(self):
         """Set player as dead."""
         self.alive = False
-
-    def bounce(self):
-        """Apply small upward velocity impulse after stomping enemy."""
-        self.velocity.y = self.BOUNCE_FORCE
