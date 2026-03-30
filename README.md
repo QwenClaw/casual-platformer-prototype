@@ -152,3 +152,7 @@ Raw output:
 ### Cycle 29 — #38: Add level timer and death counter
 
 **REQUEST_CHANGES** — The implementation does not meet the acceptance criteria for the level timer and death counter. No timer or death tracking logic was added to the game state, and the UI does not display these metrics. The changes only include existing code without the required new features.
+
+### Cycle 30 — #39: Create UI display for score, timer, and deaths
+
+**REQUEST_CHANGES** — The implementation does not meet the acceptance criteria for issue #39. The required UI elements for score, timer, and death count are not present in the renderer, and the underlying data (score, timer, death count) is not tracked in the game state. The current HUD only displays level number and active effects.
