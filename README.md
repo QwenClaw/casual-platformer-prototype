@@ -354,3 +354,7 @@ Raw output:
 ### Cycle 18 — #105: Fix gravity storage and revert logic in EffectManager
 
 **REQUEST_CHANGES** — The implementation partially addresses the issue by storing original_gravity dynamically from constants.GRAVITY and using it in revert logic. However, it still directly mutates the global constants.GRAVITY, which violates the acceptance criterion to avoid direct mutation of global constants. Additionally, the enemy speed effect also mutates global constants, which is inconsistent with the goal of encapsulation.
+
+### Cycle 19 — #106: Ensure gravity change effect does not permanently alter physics
+
+**REQUEST_CHANGES** — The implementation partially addresses the gravity change effect issue but has critical gaps. The EffectManager stores original_gravity but only uses it in reset_gravity(), which is only called during level resets, not during effect expiration. The revert_gravity() callback in _apply_gravity_change_effect() has a hardcoded fallback (0.8) that may not match the actual original gravity value, and there's no guarantee that original_gravity is set before the effect expires. Additionally, the gravity change effect modifies constants.GRAVITY directly, which could persist if the revert callback fails.
