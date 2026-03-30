@@ -63,8 +63,11 @@ class Game:
                     if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
                         self._start_game()
                 elif event.key == pygame.K_r and self.state != self.PLAYING and self.state != self.MAIN_MENU:
-                    # Restart current level (consistent behavior for all non-playing states)
-                    self.restart_current_level()
+                    # In GAME_COMPLETE state, reset entire game; otherwise restart current level
+                    if self.state == self.GAME_COMPLETE:
+                        self.reset_entire_game()
+                    else:
+                        self.restart_current_level()
                 elif event.key == pygame.K_n and self.state == self.LEVEL_COMPLETE:
                     # Advance to next level (only available in LEVEL_COMPLETE state)
                     self.advance_to_next_level()
