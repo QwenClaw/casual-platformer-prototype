@@ -7,6 +7,7 @@ from constants import (
     RED,
     SCREEN_W,
 )
+from collision import resolve_platform_collisions
 
 
 class Player(pygame.sprite.Sprite):
@@ -82,13 +83,8 @@ class Player(pygame.sprite.Sprite):
         if self.velocity.y > MAX_FALL_SPEED:
             self.velocity.y = MAX_FALL_SPEED
 
-        # Resolve X-axis collisions
-        self.rect.x += int(self.velocity.x)
-        self._resolve_x_collisions(platforms)
-
-        # Resolve Y-axis collisions
-        self.rect.y += int(self.velocity.y)
-        self._resolve_y_collisions(platforms)
+        # Resolve collisions using collision module
+        self.on_ground = resolve_platform_collisions(self, platforms)
 
         # Keep player within screen bounds
         if self.rect.left < 0:
@@ -97,29 +93,6 @@ class Player(pygame.sprite.Sprite):
         if self.rect.right > SCREEN_W:
             self.rect.right = SCREEN_W
             self.velocity.x = 0
-
-    def _resolve_x_collisions(self, platforms):
-        """Resolve horizontal collisions with platforms."""
-        for platform in platforms:
-            if self.rect.colliderect(platform):
-                if self.velocity.x > 0:  # Moving right
-                    self.rect.right = platform.left
-                elif self.velocity.x < 0:  # Moving left
-                    self.rect.left = platform.right
-                self.velocity.x = 0
-
-    def _resolve_y_collisions(self, platforms):
-        """Resolve vertical collisions with platforms."""
-        self.on_ground = False
-        for platform in platforms:
-            if self.rect.colliderect(platform):
-                if self.velocity.y > 0:  # Falling
-                    self.rect.bottom = platform.top
-                    self.velocity.y = 0
-                    self.on_ground = True
-                elif self.velocity.y < 0:  # Jumping/hitting ceiling
-                    self.rect.top = platform.bottom
-                    self.velocity.y = 0
 
     def die(self):
         """Set player as dead."""
