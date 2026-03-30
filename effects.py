@@ -119,17 +119,24 @@ class EffectManager:
     def _apply_platform_move_effect(self):
         """Apply platform movement effect: shift platforms slightly."""
         level = self.game.level_manager.get_current_level()
+        # Store original positions
+        original_positions = [(p.x, p.y) for p in level.platforms]
         # Shift each platform by a small random amount
+        shifts = []
         for platform in level.platforms:
             shift_x = random.randint(-10, 10)
             shift_y = random.randint(-5, 5)
             platform.x += shift_x
             platform.y += shift_y
+            shifts.append((shift_x, shift_y))
+        # Create revert callback
+        def revert_platforms():
+            for i, platform in enumerate(level.platforms):
+                if i < len(original_positions):
+                    platform.x, platform.y = original_positions[i]
         # Create an effect to revert after duration
-        effect = Effect("Platforms Shifted", (255, 165, 0), duration=300)  # 5 seconds
+        effect = Effect("Platforms Shifted", (255, 165, 0), duration=300, on_expire=revert_platforms)
         self.add_effect(effect)
-        # Schedule revert
-        self._schedule_revert('platform_move', level.platforms, shift_x, shift_y)
 
     def _apply_gravity_change_effect(self):
         """Apply gravity change effect: slightly modify gravity value."""
