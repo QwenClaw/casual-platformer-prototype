@@ -76,6 +76,11 @@ class Renderer:
         # Smooth camera movement
         self.camera_x += (target_camera_x - self.camera_x) * 0.1
         
+        # Clamp camera to level bounds
+        level_width = level.width
+        max_camera_x = max(0, level_width - SCREEN_W)
+        self.camera_x = max(0, min(self.camera_x, max_camera_x))
+        
         # Draw background with parallax effect
         self.background.draw(self.screen, self.camera_x)
 
