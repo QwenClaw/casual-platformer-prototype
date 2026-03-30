@@ -342,3 +342,7 @@ Raw output:
 ### Cycle 15 — #97: Enemy speed revert logic may fail with multiple sequential effects
 
 **REQUEST_CHANGES** — The implementation partially addresses the issue by capturing current speeds at effect application, but it still uses a class-level variable `original_enemy_speeds` that is never used and could cause interference. The revert logic correctly uses local variables in the closure, but the class variable remains a potential source of bugs if other code references it. Additionally, the gravity change effect incorrectly modifies the global constants module, which could cause cross-effect interference.
+
+### Cycle 16 — #99: JumpingEnemy lacks platform collision detection
+
+**REQUEST_CHANGES** — The JumpingEnemy class still lacks platform collision detection. The update() method includes a comment placeholder about falling indefinitely and does not integrate the collision manager. This fails the acceptance criteria for implementing platform collision detection and ensuring the enemy lands on platforms.
