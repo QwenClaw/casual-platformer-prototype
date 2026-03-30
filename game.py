@@ -63,8 +63,11 @@ class Game:
                     if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
                         self._start_game()
                 elif event.key == pygame.K_r and self.state != self.PLAYING and self.state != self.MAIN_MENU:
-                    # Reset game
-                    self.reset()
+                    # Restart current level (consistent behavior for all non-playing states)
+                    self.restart_current_level()
+                elif event.key == pygame.K_n and self.state == self.LEVEL_COMPLETE:
+                    # Advance to next level (only available in LEVEL_COMPLETE state)
+                    self.advance_to_next_level()
                 elif event.key == pygame.K_g and self.state == self.PLAYING:
                     # Toggle gravity
                     if self.gravity_toggle_cooldown <= 0:
@@ -188,29 +191,31 @@ class Game:
                 self.effect_manager.get_active_effects()
             )
 
-    def reset(self):
-        """Reset the game to initial state."""
-        if self.state == self.LEVEL_COMPLETE:
-            # Advance to next level
-            if not self.level_manager.next_level():
-                # Shouldn't happen, but handle gracefully
-                self.level_manager.reset()
-        elif self.state == self.GAME_COMPLETE:
-            # Reset entire game
-            self.level_manager.reset()
-        else:
-            # Restart current level (DEAD state)
-            self.level_manager.restart_level()
+    def restart_current_level(self):
+        """Restart the current level."""
+        self.level_manager.restart_level()
+        self._reset_player_and_effects()
+        self.state = self.PLAYING
 
-        # Reset player
+    def advance_to_next_level(self):
+        """Advance to the next level."""
+        if not self.level_manager.next_level():
+            # If there is no next level, reset entire game
+            self.level_manager.reset()
+        self._reset_player_and_effects()
+        self.state = self.PLAYING
+
+    def reset_entire_game(self):
+        """Reset the entire game to level 1."""
+        self.level_manager.reset()
+        self._reset_player_and_effects()
+        self.state = self.PLAYING
+
+    def _reset_player_and_effects(self):
+        """Reset player and effects for the current level."""
         level = self.level_manager.get_current_level()
         self.player = Player(*level.spawn_point)
         self.enemies = level.enemies
-
-        # Reset effects
         self.effect_manager.clear()
-
-        # Reset state
-        self.state = self.PLAYING
         self.prev_on_ground = True
         self.gravity_toggle_cooldown = 0
