@@ -156,3 +156,7 @@ Raw output:
 ### Cycle 30 — #39: Create UI display for score, timer, and deaths
 
 **REQUEST_CHANGES** — The implementation does not meet the acceptance criteria for issue #39. The required UI elements for score, timer, and death count are not present in the renderer, and the underlying data (score, timer, death count) is not tracked in the game state. The current HUD only displays level number and active effects.
+
+### Cycle 31 — #40: Implement checkpoint system as specified in issue #17
+
+**REQUEST_CHANGES** — The checkpoint system implementation is completely missing from the code changes. None of the acceptance criteria are addressed: no checkpoint objects are added to level data, no checkpoint collision detection or position saving exists, respawning still uses the original level spawn point, and there's no checkpoint persistence logic. The code appears unchanged from the original architecture without any checkpoint functionality.
