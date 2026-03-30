@@ -167,11 +167,11 @@ class EffectManager:
                 'FAST_ENEMY_SPEED': FAST_ENEMY_SPEED,
                 'FLYING_ENEMY_SPEED': FLYING_ENEMY_SPEED
             }
-        # Increase speeds
+        # Increase speeds using stored original values to avoid compounding increases
         import constants
-        constants.ENEMY_SPEED = ENEMY_SPEED * 1.5
-        constants.FAST_ENEMY_SPEED = FAST_ENEMY_SPEED * 1.5
-        constants.FLYING_ENEMY_SPEED = FLYING_ENEMY_SPEED * 1.5
+        constants.ENEMY_SPEED = self.original_enemy_speeds['ENEMY_SPEED'] * 1.5
+        constants.FAST_ENEMY_SPEED = self.original_enemy_speeds['FAST_ENEMY_SPEED'] * 1.5
+        constants.FLYING_ENEMY_SPEED = self.original_enemy_speeds['FLYING_ENEMY_SPEED'] * 1.5
         # Create revert callback
         def revert_enemy_speeds():
             import constants
