@@ -88,3 +88,7 @@ Raw output:
 ### Cycle 13 — #18: 6. Score / Progress Tracking
 
 **REQUEST_CHANGES** — The implementation adds multiple levels, enemy types, and gravity mechanics, but fails to implement the core requirements of issue #18: score tracking, level timer, death counter, and UI display. None of these features are present in the code changes.
+
+### Cycle 14 — #17: 5. Checkpoints
+
+**REQUEST_CHANGES** — The implementation does not include checkpoint functionality as specified in the issue. There are no checkpoint objects, no player position saving, and respawning always occurs from the level start. The changes instead add multiple levels, gravity toggle, and new enemy types which appear to be for a different feature.
