@@ -149,12 +149,22 @@ class EffectManager:
         # Update gravity in constants (hacky but works for prototype)
         import constants
         constants.GRAVITY = new_gravity
-        # Create revert callback using stored original gravity
+        # Create revert callback using stored original gravity with error handling
         def revert_gravity():
-            import constants
-            constants.GRAVITY = self.original_gravity
+            try:
+                import constants
+                constants.GRAVITY = self.original_gravity
+            except Exception:
+                # Ensure gravity is reset even if an exception occurs
+                import constants
+                constants.GRAVITY = 0.8  # Fallback to default
         effect = Effect("Gravity Changed", (128, 0, 128), duration=300, on_expire=revert_gravity)  # 5 seconds
         self.add_effect(effect)
+
+    def reset_gravity(self):
+        """Reset gravity to its original value."""
+        import constants
+        constants.GRAVITY = self.original_gravity if self.original_gravity is not None else 0.8
 
     def _apply_enemy_speed_increase_effect(self):
         """Apply enemy speed increase effect: temporarily increase speed of all enemies."""
