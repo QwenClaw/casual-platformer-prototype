@@ -44,6 +44,9 @@ class Game:
         # Gravity toggle cooldown
         self.gravity_toggle_cooldown = 0
 
+        # Timer for level elapsed time
+        self.timer = 0.0
+
     def run(self):
         """Main game loop."""
         while self.running:
@@ -91,6 +94,7 @@ class Game:
         self.state = self.PLAYING
         self.prev_on_ground = True
         self.gravity_toggle_cooldown = 0
+        self.timer = 0.0
 
     def _update_gravity_effect(self):
         """Update the gravity effect based on current gravity direction."""
@@ -176,6 +180,9 @@ class Game:
             self.state = self.DEAD
             self.sound_manager.play_death()
 
+        # Update timer
+        self.timer += self.clock.get_time() / 1000.0
+
     def draw(self):
         """Render the frame using the renderer."""
         if self.state == self.MAIN_MENU:
@@ -191,7 +198,8 @@ class Game:
                 self.state,
                 self.level_manager.get_level_number(),
                 self.level_manager.is_final_level(),
-                self.effect_manager.get_active_effects()
+                self.effect_manager.get_active_effects(),
+                self.timer
             )
 
     def restart_current_level(self):
@@ -222,3 +230,4 @@ class Game:
         self.effect_manager.clear()
         self.prev_on_ground = True
         self.gravity_toggle_cooldown = 0
+        self.timer = 0.0

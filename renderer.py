@@ -58,7 +58,7 @@ class Renderer:
         
         pygame.display.flip()
 
-    def draw(self, player, enemies, level, state, level_number, is_final_level, active_effects=None):
+    def draw(self, player, enemies, level, state, level_number, is_final_level, active_effects=None, timer=0.0):
         """Draw the complete game frame.
 
         Args:
@@ -69,6 +69,7 @@ class Renderer:
             level_number: Current level number (1-indexed)
             is_final_level: Whether this is the final level
             active_effects: List of active Effect objects (optional)
+            timer: Elapsed time in seconds for the current level
         """
         # Update camera position based on player position (simple follow camera)
         # Keep player roughly in the left third of the screen
@@ -108,7 +109,7 @@ class Renderer:
         self.screen.blit(player.image, player_adjusted_rect)
 
         # Draw HUD
-        self._draw_hud(level_number, active_effects or [])
+        self._draw_hud(level_number, active_effects or [], timer)
 
         # Draw overlay text based on state
         if state == 1:  # LEVEL_COMPLETE
@@ -120,17 +121,24 @@ class Renderer:
 
         pygame.display.flip()
 
-    def _draw_hud(self, level_number, active_effects):
+    def _draw_hud(self, level_number, active_effects, timer):
         """Draw the heads-up display.
 
         Args:
             level_number: Current level number
             active_effects: List of active Effect objects
+            timer: Elapsed time in seconds for the current level
         """
         # Draw level number
         level_text = self.font_small.render(f"Level {level_number}", True, BLACK)
         self.screen.blit(level_text, (10, 10))
-
+        
+        # Draw timer at top-right
+        timer_text = self.font_small.render(f"Time: {timer:.2f}s", True, BLACK)
+        timer_rect = timer_text.get_rect()
+        timer_rect.topright = (SCREEN_W - 10, 10)
+        self.screen.blit(timer_text, timer_rect)
+        
         # Draw active effects
         y_offset = 40
         if active_effects:
