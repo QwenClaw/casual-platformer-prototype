@@ -144,3 +144,7 @@ Raw output:
 ### Cycle 27 — #36: Add tileset and background layers
 
 **APPROVE** — The implementation successfully meets all acceptance criteria. Tileset images are generated programmatically with grass, dirt, and platform tiles, and platform drawing has been replaced with tile-based rendering. A gradient background with parallax-scrolling cloud layers has been added. The changes are functional and integrate well with the existing codebase.
+
+### Cycle 28 — #37: Implement score tracking for enemy kills
+
+**REQUEST_CHANGES** — The score tracking system is completely missing from the implementation. No score variable exists in the Game class, no score increment occurs when enemies are stomped, score is not reset on game restart, and the score is not displayed in the UI. All four acceptance criteria are unmet.
