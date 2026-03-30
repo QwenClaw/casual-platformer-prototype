@@ -302,3 +302,7 @@ Raw output:
 ### Cycle 5 — #84: Fix platform movement effect revert logic
 
 **REQUEST_CHANGES** — The implementation partially addresses the issue by adding a revert callback for platform movement in _apply_platform_move_effect, but the _schedule_revert method is still empty and the gravity and enemy speed effects do not track original values or schedule reverts. This means gravity and enemy speed changes are not reverted after duration, violating acceptance criteria.
+
+### Cycle 6 — #85: Fix gravity change effect revert logic
+
+**REQUEST_CHANGES** — The gravity change effect correctly modifies constants.GRAVITY and schedules a revert via the on_expire callback, which should restore the original value after duration. However, the enemy speed increase effect does not properly revert because _schedule_revert is empty and no revert callback is provided; this leaves enemy speeds permanently altered, violating the acceptance criteria.
