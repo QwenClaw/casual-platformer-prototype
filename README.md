@@ -181,3 +181,16 @@ The implementation does not meet the acceptance criteria for visual feedback on 
 ### Cycle 34 — #23: 11. Game States
 
 **REQUEST_CHANGES** — The implementation adds level progression, game complete state, and restart functionality, but fails to implement the required main menu and pause menu. The game over screen and restart option are partially implemented but lack proper menu interfaces. The code introduces new features like gravity toggling and multiple levels that weren't part of the original issue.
+
+
+### Cycle 34 — #23: 11. Game States
+
+**REQUEST_CHANGES** — The implementation adds level progression, game complete state, and restart functionality, but fails to implement the required main menu and pause menu. The game over screen and restart option are partially implemented but lack proper menu interfaces. The code introduces new features like gravity toggling and multiple levels that weren't part of the original issue.
+
+### Cycle 34 — #23: 11. Game States
+
+**REQUEST_CHANGES** — The implementation adds level progression, game complete state, and restart functionality, but fails to implement the required main menu and pause menu. The game over screen and restart option are partially implemented but lack proper menu interfaces. The code introduces new features like gravity toggling and multiple levels that weren't part of the original issue.
+
+### Cycle 3 — #68: Fix game over screen and restart flow
+
+**REQUEST_CHANGES** — The implementation meets most acceptance criteria but has a critical bug in the restart flow for the GAME_COMPLETE state and inconsistent behavior in the LEVEL_COMPLETE state overlay text.
