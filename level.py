@@ -12,6 +12,7 @@ class Level:
         self.goal = None
         self.spawn_point = (0, 0)
         self.level_index = level_index
+        self.width = 0  # Will be set by _build_level
         self._build_level(level_index)
 
     def _build_level(self, level_index):
@@ -29,6 +30,17 @@ class Level:
             builders[level_index]()
         else:
             builders[0]()
+        # Compute level width after building
+        self._compute_width()
+
+    def _compute_width(self):
+        """Compute the level width based on platforms and goal."""
+        max_x = 0
+        for platform in self.platforms:
+            max_x = max(max_x, platform.right)
+        if self.goal:
+            max_x = max(max_x, self.goal.right)
+        self.width = max_x
 
     def _build_level_1(self):
         """Level 1: Simple introduction - flat ground with one enemy."""
