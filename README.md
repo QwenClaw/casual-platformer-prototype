@@ -334,3 +334,7 @@ Raw output:
 ### Cycle 13 — #93: Implement revert logic for enemy speed increase effect
 
 **REQUEST_CHANGES** — The implementation partially meets the acceptance criteria by storing original enemy speed values and scheduling reverts via effect callbacks. However, the _schedule_revert method is empty and not used, which contradicts the issue's description and could lead to confusion. Additionally, the revert logic directly modifies global constants, which may cause race conditions if multiple effects overlap.
+
+### Cycle 14 — #95: Enemy speed increase effect does not revert after duration
+
+**REQUEST_CHANGES** — The implementation of the enemy speed increase effect in effects.py meets the acceptance criteria by scheduling a revert via the on_expire callback. However, the _schedule_revert method is empty and not used, which is a minor inconsistency but not a critical bug. The main issue is that the effect manager's original_enemy_speeds dictionary is not properly initialized when the effect is triggered multiple times, potentially causing incorrect reverts. This needs to be fixed to ensure enemy speeds revert correctly after each effect duration.
