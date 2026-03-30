@@ -132,3 +132,7 @@ Raw output:
 ### Cycle 24 — #33: Add particle effects on enemy death
 
 **REQUEST_CHANGES** — The implementation adds a text-based effect system for HUD display but does not implement the particle effects required by the acceptance criteria. No particle spawning, physics, or rendering code was added for enemy death effects. The existing Effect/EffectManager classes are for text overlays, not particle systems.
+
+### Cycle 25 — #34: Replace player placeholder with sprite
+
+**REQUEST_CHANGES** — The implementation does not meet the acceptance criteria for replacing the player placeholder with a sprite. The player is still rendered as a red rectangle, and no sprite image loading code was added. All other player functionality remains intact, but the core requirement of loading and displaying a sprite image is missing.
