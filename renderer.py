@@ -1,5 +1,7 @@
 import pygame
-from constants import SKY_BLUE, GREEN, SCREEN_W, SCREEN_H, BLACK, WHITE, YELLOW, DARK_GREEN
+from constants import SKY_BLUE, GREEN, SCREEN_W, SCREEN_H, BLACK, WHITE, YELLOW, DARK_GREEN, TILE_SIZE
+from tileset import Tileset
+from background import Background
 
 
 class Renderer:
@@ -14,6 +16,15 @@ class Renderer:
         self.screen = screen
         self.font_large = pygame.font.SysFont(None, 48)
         self.font_small = pygame.font.SysFont(None, 32)
+        
+        # Initialize tileset for platform rendering
+        self.tileset = Tileset()
+        
+        # Initialize background with parallax layers
+        self.background = Background()
+        
+        # Camera position for parallax scrolling
+        self.camera_x = 0
 
     def draw(self, player, enemies, level, state, level_number, is_final_level, active_effects=None):
         """Draw the complete game frame.
@@ -27,25 +38,37 @@ class Renderer:
             is_final_level: Whether this is the final level
             active_effects: List of active Effect objects (optional)
         """
-        # Clear screen with sky color
-        self.screen.fill(SKY_BLUE)
+        # Update camera position based on player position (simple follow camera)
+        # Keep player roughly in the left third of the screen
+        target_camera_x = player.rect.x - SCREEN_W // 3
+        # Smooth camera movement
+        self.camera_x += (target_camera_x - self.camera_x) * 0.1
+        
+        # Draw background with parallax effect
+        self.background.draw(self.screen, self.camera_x)
 
-        # Draw platforms as colored rectangles
+        # Draw platforms using tileset
         for platform in level.platforms:
-            pygame.draw.rect(self.screen, GREEN, platform)
-            # Draw darker border
-            pygame.draw.rect(self.screen, DARK_GREEN, platform, 2)
+            # Adjust platform position for camera
+            adjusted_rect = platform.move(-int(self.camera_x), 0)
+            
+            # Only draw if on screen
+            if -TILE_SIZE < adjusted_rect.right and adjusted_rect.left < SCREEN_W:
+                self.tileset.draw_platform(self.screen, adjusted_rect, SCREEN_H)
 
-        # Draw goal as yellow rectangle
-        pygame.draw.rect(self.screen, YELLOW, level.goal)
-        pygame.draw.rect(self.screen, (200, 180, 0), level.goal, 2)
+        # Draw goal as yellow rectangle (adjusted for camera)
+        goal_adjusted = level.goal.move(-int(self.camera_x), 0)
+        pygame.draw.rect(self.screen, YELLOW, goal_adjusted)
+        pygame.draw.rect(self.screen, (200, 180, 0), goal_adjusted, 2)
 
-        # Draw enemy sprites
+        # Draw enemy sprites (adjusted for camera)
         for enemy in enemies:
-            self.screen.blit(enemy.image, enemy.rect)
+            enemy_adjusted_rect = enemy.rect.move(-int(self.camera_x), 0)
+            self.screen.blit(enemy.image, enemy_adjusted_rect)
 
-        # Draw player sprite using rect (which is the draw rect)
-        self.screen.blit(player.image, player.rect)
+        # Draw player sprite (adjusted for camera)
+        player_adjusted_rect = player.rect.move(-int(self.camera_x), 0)
+        self.screen.blit(player.image, player_adjusted_rect)
 
         # Draw HUD
         self._draw_hud(level_number, active_effects or [])
