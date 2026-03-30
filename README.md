@@ -318,3 +318,7 @@ Raw output:
 ### Cycle 9 — #88: Add JumpingEnemy to level data
 
 **APPROVE** — The implementation meets all acceptance criteria: JumpingEnemy is imported in level.py, added to level 4 with appropriate patrol bounds and starting position, and will appear when the level is played. The change is minimal and focused, correctly integrating the new enemy type into the existing level builder.
+
+### Cycle 10 — #89: Add JumpingEnemy sprite asset
+
+**REQUEST_CHANGES** — The changed file adds a sprite image for the JumpingEnemy, but the implementation does not verify that the game code can load and display it. The acceptance criteria require verifying _load_enemy_image() can load the new sprite and ensuring correct rendering, which are not addressed by simply adding the image file.
