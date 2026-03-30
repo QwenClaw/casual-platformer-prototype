@@ -346,3 +346,7 @@ Raw output:
 ### Cycle 16 — #99: JumpingEnemy lacks platform collision detection
 
 **REQUEST_CHANGES** — The JumpingEnemy class still lacks platform collision detection. The update() method includes a comment placeholder about falling indefinitely and does not integrate the collision manager. This fails the acceptance criteria for implementing platform collision detection and ensuring the enemy lands on platforms.
+
+### Cycle 17 — #103: Implement platform edge detection for ground enemies
+
+**REQUEST_CHANGES** — The implementation adds edge detection for Enemy and FastEnemy classes, but the JumpingEnemy class does not implement the required edge detection. Additionally, the edge detection logic in Enemy and FastEnemy may not work correctly for platforms that are not directly below the enemy's current position, as it only checks a small rectangle directly below the test position.
