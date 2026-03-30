@@ -141,9 +141,8 @@ class EffectManager:
     def _apply_gravity_change_effect(self):
         """Apply gravity change effect: slightly modify gravity value."""
         from constants import GRAVITY
-        # Store original gravity in instance if not already stored
-        if not hasattr(self, 'original_gravity') or self.original_gravity == 0.8:
-            self.original_gravity = GRAVITY
+        # Store current gravity value dynamically when effect is applied
+        self.original_gravity = GRAVITY
         # Slightly increase or decrease gravity
         change = random.uniform(0.2, 0.5) * random.choice([-1, 1])
         new_gravity = GRAVITY + change
