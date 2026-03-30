@@ -100,3 +100,7 @@ Raw output:
 ### Cycle 16 — #15: 3. Combat & Collision Improvements
 
 **REQUEST_CHANGES** — The implementation successfully adds bounce effects and improves stomp detection with gravity-aware collision handling. However, it fails to implement damage cooldown (invincibility frames) and visual feedback (flash/red tint on hit) as required by the acceptance criteria.
+
+### Cycle 17 — #14: 2. Enemy (Creeper) Behavior System
+
+**REQUEST_CHANGES** — The implementation adds multiple enemy types (normal, fast, flying) with patrol behavior, but fails to implement edge detection to prevent enemies from falling off platforms. Additionally, the issue requested a jumping enemy type which is not implemented. The patrol bounds are hardcoded in level data rather than dynamically detected.
