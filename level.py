@@ -1,6 +1,6 @@
 import pygame
 from constants import SCREEN_W, SCREEN_H, TILE_SIZE, NUM_LEVELS
-from enemy import Enemy, FastEnemy, FlyingEnemy
+from enemy import Enemy, FastEnemy, FlyingEnemy, JumpingEnemy
 
 
 class Level:
