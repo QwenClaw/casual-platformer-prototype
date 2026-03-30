@@ -5,6 +5,7 @@ from level import LevelManager
 from collision import check_enemy_collision, check_goal_collision
 from sound_manager import SoundManager
 from renderer import Renderer
+from effects import Effect, EffectManager
 
 
 class Game:
@@ -29,6 +30,9 @@ class Game:
         self.enemies = level.enemies
         self.sound_manager = SoundManager()
         self.renderer = Renderer(self.screen)
+
+        # Effect manager for tracking active effects
+        self.effect_manager = EffectManager()
 
         # Game state
         self.state = self.PLAYING
@@ -62,6 +66,19 @@ class Game:
                         self.player.toggle_gravity()
                         self.sound_manager.play_gravity_toggle()
                         self.gravity_toggle_cooldown = 30  # Half second cooldown
+                        # Update gravity effect
+                        self._update_gravity_effect()
+
+    def _update_gravity_effect(self):
+        """Update the gravity effect based on current gravity direction."""
+        if self.player.gravity_direction < 0:
+            # Gravity is reversed - add effect
+            self.effect_manager.add_effect(
+                Effect("Gravity Reversed", (255, 100, 0), duration=None)
+            )
+        else:
+            # Gravity is normal - remove effect
+            self.effect_manager.remove_effect("Gravity Reversed")
 
     def update(self):
         """Update game state."""
@@ -71,6 +88,9 @@ class Game:
 
         if self.state != self.PLAYING:
             return
+
+        # Update effects
+        self.effect_manager.update()
 
         # Store previous on_ground state before update
         self.prev_on_ground = self.player.on_ground
@@ -142,7 +162,8 @@ class Game:
             level,
             self.state,
             self.level_manager.get_level_number(),
-            self.level_manager.is_final_level()
+            self.level_manager.is_final_level(),
+            self.effect_manager.get_active_effects()
         )
 
     def reset(self):
@@ -163,6 +184,9 @@ class Game:
         level = self.level_manager.get_current_level()
         self.player = Player(*level.spawn_point)
         self.enemies = level.enemies
+
+        # Reset effects
+        self.effect_manager.clear()
 
         # Reset state
         self.state = self.PLAYING
