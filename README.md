@@ -120,3 +120,7 @@ Raw output:
 ### Cycle 21 — #30: Remove player-initiated gravity toggle and integrate with effect system
 
 **REQUEST_CHANGES** — The implementation fails to meet several acceptance criteria. The G key gravity toggle and gravity_toggle_cooldown are still present in the code. Gravity changes are not triggered by enemy kills through the effect system. The gravity system still uses a complete direction toggle rather than a slight reduction as specified.
+
+### Cycle 22 — #31: Add jump animation for player
+
+**APPROVE** — The implementation fully meets all acceptance criteria for the jump animation. The player sprite stretches vertically when jumping upward and compresses when falling, with smooth transitions between states. The animation correctly resets when landing, and the code handles edge cases like gravity reversal and death states appropriately.
