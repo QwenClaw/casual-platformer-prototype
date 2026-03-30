@@ -124,3 +124,7 @@ Raw output:
 ### Cycle 22 — #31: Add jump animation for player
 
 **APPROVE** — The implementation fully meets all acceptance criteria for the jump animation. The player sprite stretches vertically when jumping upward and compresses when falling, with smooth transitions between states. The animation correctly resets when landing, and the code handles edge cases like gravity reversal and death states appropriately.
+
+### Cycle 23 — #32: Add squash/stretch animation on landing
+
+**REQUEST_CHANGES** — The implementation adds a continuous squash/stretch animation based on velocity, but the issue requires a distinct animation triggered specifically on landing with a fixed duration (5-10 frames). The current animation is always active and lacks a clear landing trigger with the specified frame count.
