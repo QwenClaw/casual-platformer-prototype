@@ -171,10 +171,14 @@ class EffectManager:
         constants.ENEMY_SPEED = ENEMY_SPEED * 1.5
         constants.FAST_ENEMY_SPEED = FAST_ENEMY_SPEED * 1.5
         constants.FLYING_ENEMY_SPEED = FLYING_ENEMY_SPEED * 1.5
-        effect = Effect("Enemies Faster", (255, 0, 0), duration=300)  # 5 seconds
+        # Create revert callback
+        def revert_enemy_speeds():
+            import constants
+            constants.ENEMY_SPEED = self.original_enemy_speeds['ENEMY_SPEED']
+            constants.FAST_ENEMY_SPEED = self.original_enemy_speeds['FAST_ENEMY_SPEED']
+            constants.FLYING_ENEMY_SPEED = self.original_enemy_speeds['FLYING_ENEMY_SPEED']
+        effect = Effect("Enemies Faster", (255, 0, 0), duration=300, on_expire=revert_enemy_speeds)  # 5 seconds
         self.add_effect(effect)
-        # Schedule revert
-        self._schedule_revert('enemy_speed_increase')
 
     def _schedule_revert(self, effect_type, *args):
         """Schedule revert of an effect after duration."""
