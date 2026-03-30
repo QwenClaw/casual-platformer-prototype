@@ -61,3 +61,7 @@ _Development log will be appended as issues are completed._
 ### Cycle 7 — #25: 14. Minimal Content Scope (IMPORTANT)
 
 **APPROVE** — The implementation fully meets the acceptance criteria: 7 handcrafted levels (within the 5-10 range), 3 distinct enemy types (standard, fast, flying), and a unique gravity toggle mechanic. The code is well-structured, integrates the new features cleanly with existing systems, and includes appropriate sound effects and UI feedback.
+
+### Cycle 8 — #24: 12. Bug Fixing & Edge Cases
+
+**APPROVE** — The implementation successfully addresses all acceptance criteria: collision glitches are fixed with substep collision resolution, player clipping is prevented through velocity clamping and axis-separated collision, multiple enemy collisions are handled by processing stomps first, and inconsistent jump behavior is fixed with coyote time and jump buffering. The code also includes robust edge case handling for gravity direction and screen bounds.
