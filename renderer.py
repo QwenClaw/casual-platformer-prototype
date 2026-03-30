@@ -107,7 +107,7 @@ class Renderer:
 
         # Draw overlay text based on state
         if state == 1:  # LEVEL_COMPLETE
-            self._draw_overlay("LEVEL COMPLETE!", (0, 255, 0), "Press R to restart | Press N for next level")
+            self._draw_overlay("LEVEL COMPLETE!", (0, 255, 0), "Press R to restart current level | Press N for next level")
         elif state == 2:  # DEAD
             self._draw_overlay("GAME OVER", (255, 0, 0), "Press [R] to restart current level", YELLOW)
         elif state == 3:  # GAME_COMPLETE
