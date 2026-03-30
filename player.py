@@ -23,6 +23,8 @@ class Player(pygame.sprite.Sprite):
     COYOTE_TIME = 6
     # Jump buffer: frames before landing where jump input is remembered
     JUMP_BUFFER = 8
+    # Jump cutoff: multiplier applied when jump button released early (variable jump height)
+    JUMP_CUTOFF = 0.4
 
     def __init__(self, x, y):
         super().__init__()
@@ -51,15 +53,21 @@ class Player(pygame.sprite.Sprite):
         # Jump buffer tracking
         self.jump_buffer_timer = 0
 
+        # Variable jump height tracking
+        self.is_jumping = False
+
     def update(self, keys, platforms):
         """Update player state based on input and collisions.
 
         Args:
             keys: Dictionary of key states from pygame.key.get_pressed()
             platforms: List of pygame.Rect representing collision surfaces
+
+        Returns:
+            bool: True if a jump occurred this frame
         """
         if not self.alive:
-            return
+            return False
 
         # Handle horizontal input
         moving = False
@@ -88,6 +96,7 @@ class Player(pygame.sprite.Sprite):
         # Update coyote time
         if self.on_ground:
             self.coyote_timer = self.COYOTE_TIME
+            self.is_jumping = False
         elif self.coyote_timer > 0:
             self.coyote_timer -= 1
 
@@ -110,7 +119,20 @@ class Player(pygame.sprite.Sprite):
             self.on_ground = False
             self.coyote_timer = 0
             self.jump_buffer_timer = 0
+            self.is_jumping = True
             return True  # Signal that a jump occurred
+
+        # Variable jump height: cut jump short if button released during ascent
+        if self.is_jumping and not jump_pressed:
+            # Check if player is still moving upward (against gravity)
+            moving_against_gravity = (
+                self.gravity_direction > 0 and self.velocity.y < 0
+            ) or (
+                self.gravity_direction < 0 and self.velocity.y > 0
+            )
+            if moving_against_gravity:
+                self.velocity.y *= self.JUMP_CUTOFF
+            self.is_jumping = False
 
         # Apply gravity (direction-aware)
         self.velocity.y += GRAVITY * self.gravity_direction
@@ -134,9 +156,6 @@ class Player(pygame.sprite.Sprite):
         elif self.velocity.y < -max_vel:
             self.velocity.y = -max_vel
 
-        # Store previous ground state
-        prev_on_ground = self.on_ground
-
         # Resolve collisions using collision module
         self.on_ground = resolve_platform_collisions(self, platforms, self.gravity_direction)
 
@@ -157,11 +176,13 @@ class Player(pygame.sprite.Sprite):
         self.velocity.y = 3 * self.gravity_direction
         self.on_ground = False
         self.coyote_timer = 0
+        self.is_jumping = False
 
     def bounce(self):
         """Bounce the player (after stomping an enemy)."""
         self.velocity.y = self.BOUNCE_FORCE * self.gravity_direction
         self.coyote_timer = 0
+        self.is_jumping = False
 
     def die(self):
         """Set player as dead."""
