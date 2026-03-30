@@ -1,6 +1,6 @@
 import pygame
 from constants import SCREEN_W, SCREEN_H, TILE_SIZE, NUM_LEVELS
-from enemy import Enemy, FastEnemy, FlyingEnemy
+from enemy import Enemy, FastEnemy, FlyingEnemy, JumpingEnemy
 
 
 class Level:
@@ -146,7 +146,7 @@ class Level:
         self.platforms.append(pygame.Rect(TILE_SIZE * 9, ground_y - TILE_SIZE * 4, TILE_SIZE * 2, TILE_SIZE))
         self.platforms.append(pygame.Rect(TILE_SIZE * 18, ground_y - TILE_SIZE * 4, TILE_SIZE * 2, TILE_SIZE))
 
-        # Multiple enemies including fast enemy
+        # Multiple enemies including fast enemy and jumping enemy
         self.enemies.append(Enemy(
             x=TILE_SIZE * 4,
             y=ground_y - TILE_SIZE,
@@ -170,6 +170,13 @@ class Level:
             y=ground_y - TILE_SIZE,
             patrol_left=TILE_SIZE * 26,
             patrol_right=TILE_SIZE * 30
+        ))
+        # Add a jumping enemy
+        self.enemies.append(JumpingEnemy(
+            x=TILE_SIZE * 18,
+            y=ground_y - TILE_SIZE,
+            patrol_left=TILE_SIZE * 16,
+            patrol_right=TILE_SIZE * 20
         ))
 
         # Goal
