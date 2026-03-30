@@ -310,3 +310,7 @@ Raw output:
 ### Cycle 7 — #86: Fix enemy speed increase effect revert logic
 
 **REQUEST_CHANGES** — The implementation adds a revert callback for enemy speed increase, but the original issue stated that the _schedule_revert method was empty and speeds remained increased permanently. The fix correctly implements revert logic in _apply_enemy_speed_increase_effect, but the _schedule_revert method remains empty and unused, which may indicate incomplete refactoring. Additionally, the effect manager stores original speeds in a class variable that persists across multiple effect triggers, which could cause incorrect reverts if multiple speed increase effects are applied sequentially.
+
+### Cycle 8 — #87: Create JumpingEnemy class with jump physics
+
+**REQUEST_CHANGES** — The JumpingEnemy class has been created with patrol behavior and periodic jumping, but it lacks proper collision detection with platforms, causing it to fall indefinitely. The acceptance criteria for implementing jump physics are not fully met because the enemy does not interact with the level's platforms, which is critical for a platformer.
