@@ -164,3 +164,7 @@ Raw output:
 ### Cycle 32 — #41: Add damage cooldown (invincibility frames) after enemy hit
 
 **REQUEST_CHANGES** — The implementation does not meet the acceptance criteria for invincibility frames. The player still dies immediately on non-stomp enemy collision, with no invincibility state, timer, or damage cooldown logic added. The EffectManager and Effect classes were added but are only used for gravity effects, not invincibility.
+
+### Cycle 33 — #42: Add visual feedback (flash/red tint) when player takes damage
+
+**REQUEST_CHANGES** — The implementation does not meet the acceptance criteria for visual feedback on damage. The player currently dies immediately on non-stomp enemy collision with no invincibility frames or visual effect. The changes only add an effect system and gravity effect, but do not address the damage visual feedback requirements.
