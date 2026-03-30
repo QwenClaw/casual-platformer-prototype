@@ -290,3 +290,7 @@ Raw output:
 ### Cycle 2 — #46: Implement effect system manager and random effect triggering on enemy kill
 
 **REQUEST_CHANGES** — The implementation partially meets the acceptance criteria but has critical bugs. The EffectManager class is created and random effects trigger on enemy kill, but the platform movement effect modifies platform rects directly without reverting, and the gravity change effect modifies global constants without proper revert logic. The enemy speed increase effect stores original speeds but does not revert them after duration.
+
+### Cycle 3 — #44: Add jumping enemy type
+
+**REQUEST_CHANGES** — The implementation does not meet the acceptance criteria for adding a JumpingEnemy class. The changed files show no new JumpingEnemy class, no jump physics for enemies, and no jumping enemy added to any level. The issue specifically requested a JumpingEnemy that periodically jumps while patrolling, but only normal, fast, and flying enemies were implemented.
