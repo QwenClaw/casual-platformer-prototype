@@ -326,3 +326,7 @@ Raw output:
 ### Cycle 11 — #90: Implement dynamic edge detection for ground enemies
 
 **REQUEST_CHANGES** — The implementation does not meet the acceptance criteria for dynamic edge detection. The Enemy and FastEnemy classes still rely on hardcoded patrol bounds rather than checking for platform presence ahead. The update() methods only reverse direction at patrol bounds, not at platform edges, and there's no mechanism to query the level's platform layout.
+
+### Cycle 12 — #92: Implement revert logic for gravity change effect
+
+**REQUEST_CHANGES** — The implementation partially addresses the gravity change revert logic but has critical issues. The original gravity is stored as a hardcoded value (0.8) instead of reading from constants.GRAVITY, which could cause incorrect reversion if the constant changes. Additionally, the gravity change effect modifies constants.GRAVITY directly, which is a global state mutation that could affect other systems unexpectedly. The acceptance criteria are not fully met because the revert logic is not robust and the effect does not ensure permanent alteration is prevented in all scenarios.
