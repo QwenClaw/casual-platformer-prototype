@@ -1,5 +1,5 @@
 import pygame
-from constants import SCREEN_W, SCREEN_H, FPS
+from constants import SCREEN_W, SCREEN_H, FPS, STATE_PLAYING, STATE_LEVEL_COMPLETE, STATE_DEAD, STATE_GAME_COMPLETE, STATE_MAIN_MENU
 from player import Player
 from level import LevelManager
 from collision import check_enemy_collision, check_goal_collision
@@ -11,11 +11,12 @@ from effects import Effect, EffectManager
 class Game:
     """Main game loop and state manager."""
 
-    # Game states
-    PLAYING = 0
-    LEVEL_COMPLETE = 1
-    DEAD = 2
-    GAME_COMPLETE = 3
+    # Game states (mapped to constants for backward compatibility)
+    PLAYING = STATE_PLAYING
+    LEVEL_COMPLETE = STATE_LEVEL_COMPLETE
+    DEAD = STATE_DEAD
+    GAME_COMPLETE = STATE_GAME_COMPLETE
+    MAIN_MENU = STATE_MAIN_MENU
 
     def __init__(self):
         self.screen = pygame.display.set_mode((SCREEN_W, SCREEN_H))
@@ -34,8 +35,8 @@ class Game:
         # Effect manager for tracking active effects
         self.effect_manager = EffectManager()
 
-        # Game state
-        self.state = self.PLAYING
+        # Game state - start in main menu
+        self.state = self.MAIN_MENU
 
         # Track previous on_ground state for jump detection
         self.prev_on_ground = True
@@ -57,7 +58,11 @@ class Game:
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_r and self.state != self.PLAYING:
+                if self.state == self.MAIN_MENU:
+                    # Start game from main menu
+                    if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
+                        self._start_game()
+                elif event.key == pygame.K_r and self.state != self.PLAYING and self.state != self.MAIN_MENU:
                     # Reset game
                     self.reset()
                 elif event.key == pygame.K_g and self.state == self.PLAYING:
@@ -68,6 +73,18 @@ class Game:
                         self.gravity_toggle_cooldown = 30  # Half second cooldown
                         # Update gravity effect
                         self._update_gravity_effect()
+
+    def _start_game(self):
+        """Start the game from main menu."""
+        # Reset to first level
+        self.level_manager.reset()
+        level = self.level_manager.get_current_level()
+        self.player = Player(*level.spawn_point)
+        self.enemies = level.enemies
+        self.effect_manager.clear()
+        self.state = self.PLAYING
+        self.prev_on_ground = True
+        self.gravity_toggle_cooldown = 0
 
     def _update_gravity_effect(self):
         """Update the gravity effect based on current gravity direction."""
@@ -155,16 +172,21 @@ class Game:
 
     def draw(self):
         """Render the frame using the renderer."""
-        level = self.level_manager.get_current_level()
-        self.renderer.draw(
-            self.player,
-            self.enemies,
-            level,
-            self.state,
-            self.level_manager.get_level_number(),
-            self.level_manager.is_final_level(),
-            self.effect_manager.get_active_effects()
-        )
+        if self.state == self.MAIN_MENU:
+            # Draw main menu
+            self.renderer.draw_main_menu()
+        else:
+            # Draw game
+            level = self.level_manager.get_current_level()
+            self.renderer.draw(
+                self.player,
+                self.enemies,
+                level,
+                self.state,
+                self.level_manager.get_level_number(),
+                self.level_manager.is_final_level(),
+                self.effect_manager.get_active_effects()
+            )
 
     def reset(self):
         """Reset the game to initial state."""
