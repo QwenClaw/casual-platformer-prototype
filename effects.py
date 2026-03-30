@@ -50,7 +50,7 @@ class EffectManager:
         """
         self.effects = []
         self.game = game
-        self.original_gravity = 0.8  # Store original gravity from constants
+        self.original_gravity = None  # Will be set when gravity change effect is applied
         self.original_enemy_speeds = {}  # Store original speeds of enemies
 
     def add_effect(self, effect):
