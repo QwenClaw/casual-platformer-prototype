@@ -70,12 +70,13 @@ class Player(pygame.sprite.Sprite):
         self.stretch_factor = 1.0  # Current stretch (1.0 = normal)
         self.target_stretch = 1.0  # Target stretch to interpolate toward
 
-    def update(self, keys, platforms):
+    def update(self, keys, platforms, level_width=SCREEN_W):
         """Update player state based on input and collisions.
 
         Args:
             keys: Dictionary of key states from pygame.key.get_pressed()
             platforms: List of pygame.Rect representing collision surfaces
+            level_width: Width of the current level in pixels (default: SCREEN_W)
 
         Returns:
             bool: True if a jump occurred this frame
@@ -173,12 +174,12 @@ class Player(pygame.sprite.Sprite):
         # Resolve collisions using collision module
         self.on_ground = resolve_platform_collisions(self, platforms, self.gravity_direction)
 
-        # Keep player within screen bounds
+        # Keep player within level bounds
         if self.collision_rect.left < 0:
             self.collision_rect.left = 0
             self.velocity.x = 0
-        if self.collision_rect.right > SCREEN_W:
-            self.collision_rect.right = SCREEN_W
+        if self.collision_rect.right > level_width:
+            self.collision_rect.right = level_width
             self.velocity.x = 0
 
         # Update animation
