@@ -306,3 +306,7 @@ Raw output:
 ### Cycle 6 — #85: Fix gravity change effect revert logic
 
 **REQUEST_CHANGES** — The gravity change effect correctly modifies constants.GRAVITY and schedules a revert via the on_expire callback, which should restore the original value after duration. However, the enemy speed increase effect does not properly revert because _schedule_revert is empty and no revert callback is provided; this leaves enemy speeds permanently altered, violating the acceptance criteria.
+
+### Cycle 7 — #86: Fix enemy speed increase effect revert logic
+
+**REQUEST_CHANGES** — The implementation adds a revert callback for enemy speed increase, but the original issue stated that the _schedule_revert method was empty and speeds remained increased permanently. The fix correctly implements revert logic in _apply_enemy_speed_increase_effect, but the _schedule_revert method remains empty and unused, which may indicate incomplete refactoring. Additionally, the effect manager stores original speeds in a class variable that persists across multiple effect triggers, which could cause incorrect reverts if multiple speed increase effects are applied sequentially.
