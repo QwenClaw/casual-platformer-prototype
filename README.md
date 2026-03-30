@@ -112,3 +112,7 @@ Raw output:
 ### Cycle 19 — #28: Implement effect system manager and random effect triggering on enemy kill
 
 **REQUEST_CHANGES** — The implementation does not meet the acceptance criteria for issue #28. No EffectManager class was created, and none of the three required effects (platform movement, gravity change, enemy speed increase) were implemented. The changes instead focus on adding multiple levels, enemy types, and a gravity toggle feature, which are unrelated to the requested effect system.
+
+### Cycle 20 — #29: Display active effects to player on HUD
+
+**APPROVE** — The implementation successfully adds an effect system and displays active effects on the HUD with names, colors, and remaining duration. The HUD updates in real-time as effects are added or expire, meeting all acceptance criteria. The code is well-structured and extensible for future effects.
