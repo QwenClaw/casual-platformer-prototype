@@ -109,7 +109,7 @@ class Renderer:
         if state == 1:  # LEVEL_COMPLETE
             self._draw_overlay("LEVEL COMPLETE!", (0, 255, 0), "Press R to restart | Press N for next level")
         elif state == 2:  # DEAD
-            self._draw_overlay("GAME OVER", (255, 0, 0), "Press R to restart current level")
+            self._draw_overlay("GAME OVER", (255, 0, 0), "Press [R] to restart current level", YELLOW)
         elif state == 3:  # GAME_COMPLETE
             self._draw_overlay("YOU WIN!", (255, 215, 0), "Press R to play again")
 
@@ -146,13 +146,14 @@ class Renderer:
             no_effects_text = self.font_small.render("No active effects", True, (128, 128, 128))
             self.screen.blit(no_effects_text, (10, y_offset))
 
-    def _draw_overlay(self, text, color, subtitle):
+    def _draw_overlay(self, text, color, subtitle, subtitle_color=WHITE):
         """Draw overlay text centered on screen.
 
         Args:
             text: Text string to display
             color: RGB color tuple for the text
             subtitle: Subtitle text
+            subtitle_color: RGB color tuple for the subtitle text (default: WHITE)
         """
         # Semi-transparent background
         overlay = pygame.Surface((SCREEN_W, SCREEN_H), pygame.SRCALPHA)
@@ -165,6 +166,6 @@ class Renderer:
         self.screen.blit(text_surface, text_rect)
 
         # Subtitle
-        subtitle_surface = self.font_small.render(subtitle, True, WHITE)
+        subtitle_surface = self.font_small.render(subtitle, True, subtitle_color)
         subtitle_rect = subtitle_surface.get_rect(center=(SCREEN_W // 2, SCREEN_H // 2 + 30))
         self.screen.blit(subtitle_surface, subtitle_rect)
