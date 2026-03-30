@@ -28,6 +28,9 @@ class Game:
 
         # Game state
         self.state = self.PLAYING
+        
+        # Track previous on_ground state for jump detection
+        self.prev_on_ground = True
 
     def run(self):
         """Main game loop."""
@@ -52,9 +55,16 @@ class Game:
         if self.state != self.PLAYING:
             return
 
+        # Store previous on_ground state before update
+        self.prev_on_ground = self.player.on_ground
+
         # Update player with current key states
         keys = pygame.key.get_pressed()
         self.player.update(keys, self.level.platforms)
+
+        # Detect jump: player was on ground, now is not
+        if self.prev_on_ground and not self.player.on_ground and self.player.velocity.y < 0:
+            self.sound_manager.play_jump()
 
         # Update enemies
         for enemy in self.enemies:
