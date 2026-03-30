@@ -78,31 +78,41 @@ class Game:
         # Update player with current key states
         keys = pygame.key.get_pressed()
         level = self.level_manager.get_current_level()
-        self.player.update(keys, level.platforms)
+        jumped = self.player.update(keys, level.platforms)
 
-        # Detect jump: player was on ground, now is not
-        if self.prev_on_ground and not self.player.on_ground:
-            if (self.player.gravity_direction > 0 and self.player.velocity.y < 0) or \
-               (self.player.gravity_direction < 0 and self.player.velocity.y > 0):
-                self.sound_manager.play_jump()
+        # Play jump sound if a jump occurred
+        if jumped:
+            self.sound_manager.play_jump()
 
         # Update enemies
         for enemy in self.enemies:
             enemy.update()
 
-        # Check enemy collisions
-        enemy_hit, is_stomp = check_enemy_collision(self.player, self.enemies)
-        if enemy_hit:
-            if is_stomp:
-                enemy_hit.kill()
-                self.enemies.remove(enemy_hit)
+        # Check enemy collisions - handle multiple collisions
+        collisions = check_enemy_collision(self.player, self.enemies)
+        if collisions:
+            # Process stomps first
+            stomped = False
+            for enemy, is_stomp in collisions:
+                if is_stomp:
+                    if enemy in self.enemies:
+                        enemy.kill()
+                        self.enemies.remove(enemy)
+                        stomped = True
+
+            if stomped:
+                # Bounce once after stomping any enemies
                 self.player.bounce()
                 self.sound_manager.play_stomp()
             else:
-                self.player.die()
-                self.state = self.DEAD
-                self.sound_manager.play_death()
-                return
+                # All collisions were non-stomp hits - player dies
+                # But only if no stomp happened
+                has_non_stomp = any(not is_stomp for _, is_stomp in collisions)
+                if has_non_stomp:
+                    self.player.die()
+                    self.state = self.DEAD
+                    self.sound_manager.play_death()
+                    return
 
         # Check goal collision
         if check_goal_collision(self.player, level.goal):
