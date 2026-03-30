@@ -160,24 +160,23 @@ class EffectManager:
     def _apply_enemy_speed_increase_effect(self):
         """Apply enemy speed increase effect: temporarily increase speed of all enemies."""
         from constants import ENEMY_SPEED, FAST_ENEMY_SPEED, FLYING_ENEMY_SPEED
-        # Store original speeds if not already stored
-        if not self.original_enemy_speeds:
-            self.original_enemy_speeds = {
-                'ENEMY_SPEED': ENEMY_SPEED,
-                'FAST_ENEMY_SPEED': FAST_ENEMY_SPEED,
-                'FLYING_ENEMY_SPEED': FLYING_ENEMY_SPEED
-            }
-        # Increase speeds using stored original values to avoid compounding increases
+        # Capture current speeds at the time of effect application
+        current_speeds = {
+            'ENEMY_SPEED': ENEMY_SPEED,
+            'FAST_ENEMY_SPEED': FAST_ENEMY_SPEED,
+            'FLYING_ENEMY_SPEED': FLYING_ENEMY_SPEED
+        }
+        # Increase speeds using current values
         import constants
-        constants.ENEMY_SPEED = self.original_enemy_speeds['ENEMY_SPEED'] * 1.5
-        constants.FAST_ENEMY_SPEED = self.original_enemy_speeds['FAST_ENEMY_SPEED'] * 1.5
-        constants.FLYING_ENEMY_SPEED = self.original_enemy_speeds['FLYING_ENEMY_SPEED'] * 1.5
-        # Create revert callback
+        constants.ENEMY_SPEED = current_speeds['ENEMY_SPEED'] * 1.5
+        constants.FAST_ENEMY_SPEED = current_speeds['FAST_ENEMY_SPEED'] * 1.5
+        constants.FLYING_ENEMY_SPEED = current_speeds['FLYING_ENEMY_SPEED'] * 1.5
+        # Create revert callback that captures the speeds at this moment
         def revert_enemy_speeds():
             import constants
-            constants.ENEMY_SPEED = self.original_enemy_speeds['ENEMY_SPEED']
-            constants.FAST_ENEMY_SPEED = self.original_enemy_speeds['FAST_ENEMY_SPEED']
-            constants.FLYING_ENEMY_SPEED = self.original_enemy_speeds['FLYING_ENEMY_SPEED']
+            constants.ENEMY_SPEED = current_speeds['ENEMY_SPEED']
+            constants.FAST_ENEMY_SPEED = current_speeds['FAST_ENEMY_SPEED']
+            constants.FLYING_ENEMY_SPEED = current_speeds['FLYING_ENEMY_SPEED']
         effect = Effect("Enemies Faster", (255, 0, 0), duration=300, on_expire=revert_enemy_speeds)  # 5 seconds
         self.add_effect(effect)
 
