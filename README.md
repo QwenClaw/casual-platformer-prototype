@@ -76,3 +76,7 @@ _Development log will be appended as issues are completed._
 
 Raw output:
 
+
+### Cycle 11 — #20: 8. Juice (Game Feel)
+
+**REQUEST_CHANGES** — The implementation does not meet any of the acceptance criteria for the juice/game feel issue. No jump animation, squash/stretch on landing, particles on enemy death, or screen shake on hit were implemented. The changes instead focus on level progression, enemy types, and gravity mechanics which are unrelated to this specific issue.
