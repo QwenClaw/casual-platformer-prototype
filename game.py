@@ -230,6 +230,7 @@ class Game:
         self.player = Player(*level.spawn_point)
         self.enemies = level.enemies
         self.effect_manager.clear()
+        self.effect_manager.reset_gravity()
         self.prev_on_ground = True
         self.gravity_toggle_cooldown = 0
         self.timer = 0.0
