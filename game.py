@@ -1,9 +1,10 @@
 import pygame
-from constants import SCREEN_W, SCREEN_H, FPS, SKY_BLUE, GREEN
+from constants import SCREEN_W, SCREEN_H, FPS
 from player import Player
 from level import Level
 from collision import check_enemy_collision, check_goal_collision
 from sound_manager import SoundManager
+from renderer import Renderer
 
 
 class Game:
@@ -25,10 +26,11 @@ class Game:
         self.player = Player(*self.level.spawn_point)
         self.enemies = self.level.enemies
         self.sound_manager = SoundManager()
+        self.renderer = Renderer(self.screen)
 
         # Game state
         self.state = self.PLAYING
-        
+
         # Track previous on_ground state for jump detection
         self.prev_on_ground = True
 
@@ -48,7 +50,7 @@ class Game:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r and self.state != self.PLAYING:
                     # Reset game
-                    self.__init__()
+                    self.reset()
 
     def update(self):
         """Update game state."""
@@ -93,35 +95,18 @@ class Game:
             self.state = self.DEAD
 
     def draw(self):
-        """Render the frame."""
-        # Clear screen with sky color
-        self.screen.fill(SKY_BLUE)
+        """Render the frame using the renderer."""
+        self.renderer.draw(self.player, self.enemies, self.level, self.state)
 
-        # Draw platforms
-        for platform in self.level.platforms:
-            pygame.draw.rect(self.screen, GREEN, platform)
-
-        # Draw goal
-        pygame.draw.rect(self.screen, (255, 215, 0), self.level.goal)
-
-        # Draw enemies
-        for enemy in self.enemies:
-            self.screen.blit(enemy.image, enemy.rect)
-
-        # Draw player
-        self.screen.blit(self.player.image, self.player.rect)
-
-        # Draw overlay text based on state
-        if self.state == self.LEVEL_COMPLETE:
-            self._draw_overlay("Level Complete! Press R to restart", (0, 255, 0))
-        elif self.state == self.DEAD:
-            self._draw_overlay("Game Over! Press R to restart", (255, 0, 0))
-
-        pygame.display.flip()
-
-    def _draw_overlay(self, text, color):
-        """Draw overlay text on screen."""
-        font = pygame.font.SysFont(None, 48)
-        text_surface = font.render(text, True, color)
-        text_rect = text_surface.get_rect(center=(SCREEN_W // 2, SCREEN_H // 2))
-        self.screen.blit(text_surface, text_rect)
+    def reset(self):
+        """Reset the game to initial state."""
+        # Rebuild level
+        self.level = Level()
+        # Respawn player
+        self.player = Player(*self.level.spawn_point)
+        # Reset enemies
+        self.enemies = self.level.enemies
+        # Reset state
+        self.state = self.PLAYING
+        # Reset jump detection
+        self.prev_on_ground = True
