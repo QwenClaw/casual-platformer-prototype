@@ -4,18 +4,20 @@ import pygame
 class Effect:
     """Represents an active effect on the player."""
 
-    def __init__(self, name, color, duration=None):
+    def __init__(self, name, color, duration=None, on_expire=None):
         """Initialize an effect.
 
         Args:
             name: Display name of the effect
             color: RGB color tuple for HUD display
             duration: Duration in frames, or None for permanent until removed
+            on_expire: Optional callback to call when effect expires
         """
         self.name = name
         self.color = color
         self.duration = duration  # in frames, None means permanent
         self.active = True
+        self.on_expire = on_expire
 
     def update(self):
         """Update effect timer. Returns True if effect expired."""
@@ -23,6 +25,8 @@ class Effect:
             self.duration -= 1
             if self.duration <= 0:
                 self.active = False
+                if self.on_expire:
+                    self.on_expire()
                 return True
         return False
 
@@ -115,17 +119,24 @@ class EffectManager:
     def _apply_platform_move_effect(self):
         """Apply platform movement effect: shift platforms slightly."""
         level = self.game.level_manager.get_current_level()
+        # Store original positions
+        original_positions = [(p.x, p.y) for p in level.platforms]
         # Shift each platform by a small random amount
+        shifts = []
         for platform in level.platforms:
             shift_x = random.randint(-10, 10)
             shift_y = random.randint(-5, 5)
             platform.x += shift_x
             platform.y += shift_y
+            shifts.append((shift_x, shift_y))
+        # Create revert callback
+        def revert_platforms():
+            for i, platform in enumerate(level.platforms):
+                if i < len(original_positions):
+                    platform.x, platform.y = original_positions[i]
         # Create an effect to revert after duration
-        effect = Effect("Platforms Shifted", (255, 165, 0), duration=300)  # 5 seconds
+        effect = Effect("Platforms Shifted", (255, 165, 0), duration=300, on_expire=revert_platforms)
         self.add_effect(effect)
-        # Schedule revert
-        self._schedule_revert('platform_move', level.platforms, shift_x, shift_y)
 
     def _apply_gravity_change_effect(self):
         """Apply gravity change effect: slightly modify gravity value."""
