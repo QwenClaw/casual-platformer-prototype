@@ -160,3 +160,7 @@ Raw output:
 ### Cycle 31 — #40: Implement checkpoint system as specified in issue #17
 
 **REQUEST_CHANGES** — The checkpoint system implementation is completely missing from the code changes. None of the acceptance criteria are addressed: no checkpoint objects are added to level data, no checkpoint collision detection or position saving exists, respawning still uses the original level spawn point, and there's no checkpoint persistence logic. The code appears unchanged from the original architecture without any checkpoint functionality.
+
+### Cycle 32 — #41: Add damage cooldown (invincibility frames) after enemy hit
+
+**REQUEST_CHANGES** — The implementation does not meet the acceptance criteria for invincibility frames. The player still dies immediately on non-stomp enemy collision, with no invincibility state, timer, or damage cooldown logic added. The EffectManager and Effect classes were added but are only used for gravity effects, not invincibility.
