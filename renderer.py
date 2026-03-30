@@ -1,5 +1,5 @@
 import pygame
-from constants import SKY_BLUE, GREEN, SCREEN_W, SCREEN_H, BLACK, WHITE, YELLOW, DARK_GREEN, TILE_SIZE
+from constants import SKY_BLUE, GREEN, SCREEN_W, SCREEN_H, BLACK, WHITE, YELLOW, DARK_GREEN, TILE_SIZE, STATE_MAIN_MENU
 from tileset import Tileset
 from background import Background
 
@@ -25,6 +25,38 @@ class Renderer:
         
         # Camera position for parallax scrolling
         self.camera_x = 0
+
+    def draw_main_menu(self):
+        """Draw the main menu screen."""
+        # Draw background with fixed camera position
+        self.background.draw(self.screen, 0)
+        
+        # Semi-transparent overlay for better text visibility
+        overlay = pygame.Surface((SCREEN_W, SCREEN_H), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 128))
+        self.screen.blit(overlay, (0, 0))
+        
+        # Draw title
+        title_text = self.font_large.render("Casual Platformer Prototype", True, WHITE)
+        title_rect = title_text.get_rect(center=(SCREEN_W // 2, SCREEN_H // 3))
+        self.screen.blit(title_text, title_rect)
+        
+        # Draw start instruction
+        start_text = self.font_small.render("Press ENTER or SPACE to Start", True, YELLOW)
+        start_rect = start_text.get_rect(center=(SCREEN_W // 2, SCREEN_H // 2))
+        self.screen.blit(start_text, start_rect)
+        
+        # Draw controls hint
+        controls_text = self.font_small.render("Controls: Arrow keys/WASD to move, SPACE to jump", True, WHITE)
+        controls_rect = controls_text.get_rect(center=(SCREEN_W // 2, SCREEN_H * 2 // 3))
+        self.screen.blit(controls_text, controls_rect)
+        
+        # Draw gravity toggle hint
+        gravity_text = self.font_small.render("Press G to toggle gravity", True, (200, 200, 255))
+        gravity_rect = gravity_text.get_rect(center=(SCREEN_W // 2, SCREEN_H * 2 // 3 + 40))
+        self.screen.blit(gravity_text, gravity_rect)
+        
+        pygame.display.flip()
 
     def draw(self, player, enemies, level, state, level_number, is_final_level, active_effects=None):
         """Draw the complete game frame.
