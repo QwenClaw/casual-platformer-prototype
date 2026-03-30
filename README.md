@@ -136,3 +136,7 @@ Raw output:
 ### Cycle 25 — #34: Replace player placeholder with sprite
 
 **REQUEST_CHANGES** — The implementation does not meet the acceptance criteria for replacing the player placeholder with a sprite. The player is still rendered as a red rectangle, and no sprite image loading code was added. All other player functionality remains intact, but the core requirement of loading and displaying a sprite image is missing.
+
+### Cycle 26 — #35: Replace enemy placeholders with sprites
+
+**APPROVE** — The implementation successfully replaces enemy placeholders with sprite images for all three enemy types (basic, fast, flying). Sprite loading includes fallback handling, dimensions match collision rects via image.get_rect(), and all existing patrol and collision functionality is preserved. The changes integrate cleanly with the existing level data and rendering system.
