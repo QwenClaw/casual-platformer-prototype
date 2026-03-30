@@ -322,3 +322,7 @@ Raw output:
 ### Cycle 10 — #89: Add JumpingEnemy sprite asset
 
 **REQUEST_CHANGES** — The changed file adds a sprite image for the JumpingEnemy, but the implementation does not verify that the game code can load and display it. The acceptance criteria require verifying _load_enemy_image() can load the new sprite and ensuring correct rendering, which are not addressed by simply adding the image file.
+
+### Cycle 11 — #90: Implement dynamic edge detection for ground enemies
+
+**REQUEST_CHANGES** — The implementation does not meet the acceptance criteria for dynamic edge detection. The Enemy and FastEnemy classes still rely on hardcoded patrol bounds rather than checking for platform presence ahead. The update() methods only reverse direction at patrol bounds, not at platform edges, and there's no mechanism to query the level's platform layout.
