@@ -33,7 +33,7 @@ class Game:
         self.renderer = Renderer(self.screen)
 
         # Effect manager for tracking active effects
-        self.effect_manager = EffectManager()
+        self.effect_manager = EffectManager(self)
 
         # Game state - start in main menu
         self.state = self.MAIN_MENU
