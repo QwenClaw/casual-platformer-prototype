@@ -294,3 +294,7 @@ Raw output:
 ### Cycle 3 — #44: Add jumping enemy type
 
 **REQUEST_CHANGES** — The implementation does not meet the acceptance criteria for adding a JumpingEnemy class. The changed files show no new JumpingEnemy class, no jump physics for enemies, and no jumping enemy added to any level. The issue specifically requested a JumpingEnemy that periodically jumps while patrolling, but only normal, fast, and flying enemies were implemented.
+
+### Cycle 4 — #43: Implement edge detection for ground enemies
+
+**REQUEST_CHANGES** — The implementation does not meet the acceptance criteria for edge detection. The enemy classes (Enemy and FastEnemy) still only reverse direction at hardcoded patrol bounds, with no dynamic edge detection based on platform layout. The update() methods in enemy.py do not check for platform edges, which means enemies can walk off platforms as before.
