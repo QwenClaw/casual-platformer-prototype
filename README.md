@@ -116,3 +116,7 @@ Raw output:
 ### Cycle 20 — #29: Display active effects to player on HUD
 
 **APPROVE** — The implementation successfully adds an effect system and displays active effects on the HUD with names, colors, and remaining duration. The HUD updates in real-time as effects are added or expire, meeting all acceptance criteria. The code is well-structured and extensible for future effects.
+
+### Cycle 21 — #30: Remove player-initiated gravity toggle and integrate with effect system
+
+**REQUEST_CHANGES** — The implementation fails to meet several acceptance criteria. The G key gravity toggle and gravity_toggle_cooldown are still present in the code. Gravity changes are not triggered by enemy kills through the effect system. The gravity system still uses a complete direction toggle rather than a slight reduction as specified.
