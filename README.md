@@ -148,3 +148,7 @@ Raw output:
 ### Cycle 28 — #37: Implement score tracking for enemy kills
 
 **REQUEST_CHANGES** — The score tracking system is completely missing from the implementation. No score variable exists in the Game class, no score increment occurs when enemies are stomped, score is not reset on game restart, and the score is not displayed in the UI. All four acceptance criteria are unmet.
+
+### Cycle 29 — #38: Add level timer and death counter
+
+**REQUEST_CHANGES** — The implementation does not meet the acceptance criteria for the level timer and death counter. No timer or death tracking logic was added to the game state, and the UI does not display these metrics. The changes only include existing code without the required new features.
