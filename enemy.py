@@ -49,8 +49,12 @@ class Enemy(pygame.sprite.Sprite):
         # Direction: 1 = right, -1 = left
         self.direction = 1
 
-    def update(self):
-        """Move horizontally at ENEMY_SPEED; reverse at patrol bounds."""
+    def update(self, platforms=None):
+        """Move horizontally at ENEMY_SPEED; reverse at patrol bounds or platform edges."""
+        # Check for platform edge before moving
+        if platforms and self._is_at_edge(platforms):
+            self.direction *= -1
+        
         self.rect.x += ENEMY_SPEED * self.direction
 
         # Reverse direction when reaching patrol bounds
@@ -66,6 +70,28 @@ class Enemy(pygame.sprite.Sprite):
             self.image = self.original_image
         else:
             self.image = pygame.transform.flip(self.original_image, True, False)
+
+    def _is_at_edge(self, platforms):
+        """Check if enemy is at a platform edge in its current direction."""
+        # Create a test rect slightly ahead in movement direction
+        test_rect = self.rect.copy()
+        test_rect.x += ENEMY_SPEED * self.direction
+        
+        # Check if there's a platform below the test position
+        # For ground enemies, we check if there's a platform directly below
+        ground_check_rect = pygame.Rect(
+            test_rect.x,
+            test_rect.bottom,
+            test_rect.width,
+            4  # Check a few pixels below
+        )
+        
+        # If no platform below, we're at an edge
+        for platform in platforms:
+            if ground_check_rect.colliderect(platform):
+                return False
+        
+        return True
 
 
 class FastEnemy(pygame.sprite.Sprite):
