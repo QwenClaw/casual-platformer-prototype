@@ -141,18 +141,19 @@ class EffectManager:
     def _apply_gravity_change_effect(self):
         """Apply gravity change effect: slightly modify gravity value."""
         from constants import GRAVITY
-        # Capture original gravity
-        original_gravity = GRAVITY
+        # Store original gravity in instance if not already stored
+        if not hasattr(self, 'original_gravity') or self.original_gravity == 0.8:
+            self.original_gravity = GRAVITY
         # Slightly increase or decrease gravity
         change = random.uniform(0.2, 0.5) * random.choice([-1, 1])
         new_gravity = GRAVITY + change
         # Update gravity in constants (hacky but works for prototype)
         import constants
         constants.GRAVITY = new_gravity
-        # Create revert callback
+        # Create revert callback using stored original gravity
         def revert_gravity():
             import constants
-            constants.GRAVITY = original_gravity
+            constants.GRAVITY = self.original_gravity
         effect = Effect("Gravity Changed", (128, 0, 128), duration=300, on_expire=revert_gravity)  # 5 seconds
         self.add_effect(effect)
 
