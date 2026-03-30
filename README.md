@@ -350,3 +350,7 @@ Raw output:
 ### Cycle 17 — #103: Implement platform edge detection for ground enemies
 
 **REQUEST_CHANGES** — The implementation adds edge detection for Enemy and FastEnemy classes, but the JumpingEnemy class does not implement the required edge detection. Additionally, the edge detection logic in Enemy and FastEnemy may not work correctly for platforms that are not directly below the enemy's current position, as it only checks a small rectangle directly below the test position.
+
+### Cycle 18 — #105: Fix gravity storage and revert logic in EffectManager
+
+**REQUEST_CHANGES** — The implementation partially addresses the issue by storing original_gravity dynamically from constants.GRAVITY and using it in revert logic. However, it still directly mutates the global constants.GRAVITY, which violates the acceptance criterion to avoid direct mutation of global constants. Additionally, the enemy speed effect also mutates global constants, which is inconsistent with the goal of encapsulation.
