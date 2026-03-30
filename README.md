@@ -298,3 +298,7 @@ Raw output:
 ### Cycle 4 — #43: Implement edge detection for ground enemies
 
 **REQUEST_CHANGES** — The implementation does not meet the acceptance criteria for edge detection. The enemy classes (Enemy and FastEnemy) still only reverse direction at hardcoded patrol bounds, with no dynamic edge detection based on platform layout. The update() methods in enemy.py do not check for platform edges, which means enemies can walk off platforms as before.
+
+### Cycle 5 — #84: Fix platform movement effect revert logic
+
+**REQUEST_CHANGES** — The implementation partially addresses the issue by adding a revert callback for platform movement in _apply_platform_move_effect, but the _schedule_revert method is still empty and the gravity and enemy speed effects do not track original values or schedule reverts. This means gravity and enemy speed changes are not reverted after duration, violating acceptance criteria.
