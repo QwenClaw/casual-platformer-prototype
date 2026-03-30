@@ -65,3 +65,7 @@ _Development log will be appended as issues are completed._
 ### Cycle 8 — #24: 12. Bug Fixing & Edge Cases
 
 **APPROVE** — The implementation successfully addresses all acceptance criteria: collision glitches are fixed with substep collision resolution, player clipping is prevented through velocity clamping and axis-separated collision, multiple enemy collisions are handled by processing stomps first, and inconsistent jump behavior is fixed with coyote time and jump buffering. The code also includes robust edge case handling for gravity direction and screen bounds.
+
+### Cycle 9 — #22: 10. “World Change” Mechanic (Your USP)
+
+**REQUEST_CHANGES** — The implementation adds gravity toggle and multiple levels but does not implement the core 'World Change' mechanic. There is no effect system manager, no random effects triggered when enemies are killed, and no display of active effects to the player. The gravity toggle is player-initiated rather than triggered by enemy kills.
