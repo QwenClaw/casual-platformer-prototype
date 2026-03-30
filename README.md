@@ -140,3 +140,7 @@ Raw output:
 ### Cycle 26 — #35: Replace enemy placeholders with sprites
 
 **APPROVE** — The implementation successfully replaces enemy placeholders with sprite images for all three enemy types (basic, fast, flying). Sprite loading includes fallback handling, dimensions match collision rects via image.get_rect(), and all existing patrol and collision functionality is preserved. The changes integrate cleanly with the existing level data and rendering system.
+
+### Cycle 27 — #36: Add tileset and background layers
+
+**APPROVE** — The implementation successfully meets all acceptance criteria. Tileset images are generated programmatically with grass, dirt, and platform tiles, and platform drawing has been replaced with tile-based rendering. A gradient background with parallax-scrolling cloud layers has been added. The changes are functional and integrate well with the existing codebase.
