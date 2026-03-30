@@ -16,6 +16,8 @@ def resolve_platform_collisions(sprite, platforms, gravity_direction=1):
     Returns:
         bool: True if sprite is on ground after resolution
     """
+    # Use collision_rect if available, otherwise use rect
+    collision_rect = getattr(sprite, 'collision_rect', sprite.rect)
     on_ground = False
 
     # Calculate total movement this frame
@@ -27,16 +29,14 @@ def resolve_platform_collisions(sprite, platforms, gravity_direction=1):
     step_dx = dx / steps_x
 
     for _ in range(steps_x):
-        sprite.rect.x += int(step_dx) if step_dx >= 0 else -int(abs(step_dx))
-        # Handle fractional movement accumulation
-        sprite.rect.x += round(step_dx - int(step_dx)) if abs(step_dx) >= 1 else 0
+        collision_rect.x += int(step_dx) if step_dx >= 0 else -int(abs(step_dx))
 
         for platform in platforms:
-            if sprite.rect.colliderect(platform):
+            if collision_rect.colliderect(platform):
                 if dx > 0:  # Moving right
-                    sprite.rect.right = platform.left
+                    collision_rect.right = platform.left
                 elif dx < 0:  # Moving left
-                    sprite.rect.left = platform.right
+                    collision_rect.left = platform.right
                 sprite.velocity.x = 0
                 dx = 0
                 break
@@ -46,37 +46,36 @@ def resolve_platform_collisions(sprite, platforms, gravity_direction=1):
     step_dy = dy / steps_y
 
     for _ in range(steps_y):
-        sprite.rect.y += int(step_dy) if step_dy >= 0 else -int(abs(step_dy))
+        collision_rect.y += int(step_dy) if step_dy >= 0 else -int(abs(step_dy))
 
         for platform in platforms:
-            if sprite.rect.colliderect(platform):
+            if collision_rect.colliderect(platform):
                 if gravity_direction > 0:  # Normal gravity
                     if dy > 0:  # Falling
-                        sprite.rect.bottom = platform.top
+                        collision_rect.bottom = platform.top
                         sprite.velocity.y = 0
                         on_ground = True
                     elif dy < 0:  # Jumping/hitting ceiling
-                        sprite.rect.top = platform.bottom
+                        collision_rect.top = platform.bottom
                         sprite.velocity.y = 0
                 else:  # Reversed gravity
                     if dy < 0:  # Falling (upward)
-                        sprite.rect.top = platform.bottom
+                        collision_rect.top = platform.bottom
                         sprite.velocity.y = 0
                         on_ground = True
                     elif dy > 0:  # Jumping (downward)/hitting floor
-                        sprite.rect.bottom = platform.top
+                        collision_rect.bottom = platform.top
                         sprite.velocity.y = 0
                 dy = 0
                 break
 
     # Final ground check - ensure sprite is resting on a platform
     if not on_ground:
-        # Check if sprite is standing on a platform (small overlap check)
-        test_rect = sprite.rect.copy()
+        test_rect = collision_rect.copy()
         if gravity_direction > 0:
-            test_rect.y += 2  # Check slightly below
+            test_rect.y += 2
         else:
-            test_rect.y -= 2  # Check slightly above
+            test_rect.y -= 2
 
         for platform in platforms:
             if test_rect.colliderect(platform):
@@ -101,18 +100,21 @@ def check_enemy_collision(player, enemies):
     Returns:
         list: List of (enemy, is_stomp) tuples for all collisions
     """
+    # Use collision_rect if available, otherwise use rect
+    player_rect = getattr(player, 'collision_rect', player.rect)
+    
     collisions = []
     for enemy in enemies:
-        if player.rect.colliderect(enemy.rect):
+        if player_rect.colliderect(enemy.rect):
             # Check if player is falling toward enemy based on gravity direction
             is_stomp = False
             if player.gravity_direction > 0:  # Normal gravity
                 # Player falling down, stomp if above enemy midpoint
-                if player.velocity.y > 0 and player.rect.bottom <= enemy.rect.centery + 4:
+                if player.velocity.y > 0 and player_rect.bottom <= enemy.rect.centery + 4:
                     is_stomp = True
             else:  # Reversed gravity
                 # Player falling up, stomp if below enemy midpoint
-                if player.velocity.y < 0 and player.rect.top >= enemy.rect.centery - 4:
+                if player.velocity.y < 0 and player_rect.top >= enemy.rect.centery - 4:
                     is_stomp = True
             collisions.append((enemy, is_stomp))
     return collisions
@@ -128,4 +130,6 @@ def check_goal_collision(player, goal_rect):
     Returns:
         bool: True if player collides with goal
     """
-    return player.rect.colliderect(goal_rect)
+    # Use collision_rect if available, otherwise use rect
+    player_rect = getattr(player, 'collision_rect', player.rect)
+    return player_rect.colliderect(goal_rect)

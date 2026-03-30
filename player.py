@@ -26,17 +26,27 @@ class Player(pygame.sprite.Sprite):
     # Jump cutoff: multiplier applied when jump button released early (variable jump height)
     JUMP_CUTOFF = 0.4
 
+    # Animation constants
+    STRETCH_MAX = 1.25  # Maximum stretch factor when jumping up
+    COMPRESS_MIN = 0.75  # Minimum compression factor when falling
+    ANIMATION_SMOOTHING = 0.15  # How quickly animation transitions
+
     def __init__(self, x, y):
         super().__init__()
 
+        # Original dimensions
+        self.original_width = 32
+        self.original_height = 48
+
         # Create player surface (32x48 rectangle)
-        self.image = pygame.Surface((32, 48))
+        self.image = pygame.Surface((self.original_width, self.original_height))
         self.image.fill(RED)
 
-        # Set up rect and position
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
+        # Collision rect (fixed size for physics)
+        self.collision_rect = pygame.Rect(x, y, self.original_width, self.original_height)
+
+        # Draw rect (changes with animation)
+        self.rect = self.collision_rect.copy()
 
         # Physics
         self.velocity = pygame.math.Vector2(0, 0)
@@ -55,6 +65,10 @@ class Player(pygame.sprite.Sprite):
 
         # Variable jump height tracking
         self.is_jumping = False
+
+        # Animation state
+        self.stretch_factor = 1.0  # Current stretch (1.0 = normal)
+        self.target_stretch = 1.0  # Target stretch to interpolate toward
 
     def update(self, keys, platforms):
         """Update player state based on input and collisions.
@@ -114,17 +128,17 @@ class Player(pygame.sprite.Sprite):
             self.jump_buffer_timer -= 1
 
         # Execute jump if buffered and within coyote time
+        jump_occurred = False
         if self.jump_buffer_timer > 0 and self.coyote_timer > 0:
             self.velocity.y = JUMP_FORCE * self.gravity_direction
             self.on_ground = False
             self.coyote_timer = 0
             self.jump_buffer_timer = 0
             self.is_jumping = True
-            return True  # Signal that a jump occurred
+            jump_occurred = True
 
         # Variable jump height: cut jump short if button released during ascent
         if self.is_jumping and not jump_pressed:
-            # Check if player is still moving upward (against gravity)
             moving_against_gravity = (
                 self.gravity_direction > 0 and self.velocity.y < 0
             ) or (
@@ -160,14 +174,81 @@ class Player(pygame.sprite.Sprite):
         self.on_ground = resolve_platform_collisions(self, platforms, self.gravity_direction)
 
         # Keep player within screen bounds
-        if self.rect.left < 0:
-            self.rect.left = 0
+        if self.collision_rect.left < 0:
+            self.collision_rect.left = 0
             self.velocity.x = 0
-        if self.rect.right > SCREEN_W:
-            self.rect.right = SCREEN_W
+        if self.collision_rect.right > SCREEN_W:
+            self.collision_rect.right = SCREEN_W
             self.velocity.x = 0
 
-        return False  # No jump occurred
+        # Update animation
+        self._update_animation()
+
+        return jump_occurred
+
+    def _update_animation(self):
+        """Update the player's visual animation based on velocity."""
+        # Determine target stretch based on vertical movement
+        if self.on_ground:
+            self.target_stretch = 1.0
+        else:
+            # Check if moving upward or falling relative to gravity
+            moving_up = (
+                self.gravity_direction > 0 and self.velocity.y < 0
+            ) or (
+                self.gravity_direction < 0 and self.velocity.y > 0
+            )
+            falling = (
+                self.gravity_direction > 0 and self.velocity.y > 2
+            ) or (
+                self.gravity_direction < 0 and self.velocity.y < -2
+            )
+
+            if moving_up:
+                # Stretch vertically when jumping up
+                stretch_amount = min(abs(self.velocity.y) / abs(JUMP_FORCE), 1.0)
+                self.target_stretch = 1.0 + (self.STRETCH_MAX - 1.0) * stretch_amount
+            elif falling:
+                # Compress when falling
+                compress_amount = min(abs(self.velocity.y) / MAX_FALL_SPEED, 1.0)
+                self.target_stretch = 1.0 - (1.0 - self.COMPRESS_MIN) * compress_amount
+            else:
+                self.target_stretch = 1.0
+
+        # Smoothly interpolate toward target
+        self.stretch_factor += (self.target_stretch - self.stretch_factor) * self.ANIMATION_SMOOTHING
+
+        # Clamp stretch factor
+        self.stretch_factor = max(self.COMPRESS_MIN, min(self.STRETCH_MAX, self.stretch_factor))
+
+        # Calculate new dimensions
+        new_height = int(self.original_height * self.stretch_factor)
+        new_width = int(self.original_width / self.stretch_factor)  # Inverse for squash and stretch
+
+        # Ensure minimum dimensions
+        new_height = max(10, new_height)
+        new_width = max(10, new_width)
+
+        # Create scaled image
+        self.image = pygame.transform.scale(
+            pygame.Surface((self.original_width, self.original_height)),
+            (new_width, new_height)
+        )
+        self.image.fill(RED)
+
+        # Update draw rect to align with collision rect
+        self.rect = self.image.get_rect()
+
+        # Align based on gravity direction
+        if self.gravity_direction > 0:
+            # Normal gravity: align bottom
+            self.rect.bottom = self.collision_rect.bottom
+        else:
+            # Reversed gravity: align top
+            self.rect.top = self.collision_rect.top
+
+        # Center horizontally
+        self.rect.centerx = self.collision_rect.centerx
 
     def toggle_gravity(self):
         """Toggle gravity direction."""
@@ -187,3 +268,8 @@ class Player(pygame.sprite.Sprite):
     def die(self):
         """Set player as dead."""
         self.alive = False
+        # Reset to normal appearance
+        self.stretch_factor = 1.0
+        self.image = pygame.Surface((self.original_width, self.original_height))
+        self.image.fill(RED)
+        self.rect = self.collision_rect.copy()

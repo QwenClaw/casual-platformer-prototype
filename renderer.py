@@ -44,7 +44,7 @@ class Renderer:
         for enemy in enemies:
             self.screen.blit(enemy.image, enemy.rect)
 
-        # Draw player sprite
+        # Draw player sprite using rect (which is the draw rect)
         self.screen.blit(player.image, player.rect)
 
         # Draw HUD
@@ -110,6 +110,6 @@ class Renderer:
         self.screen.blit(text_surface, text_rect)
 
         # Subtitle
-        sub_surface = self.font_small.render(subtitle, True, WHITE)
-        sub_rect = sub_surface.get_rect(center=(SCREEN_W // 2, SCREEN_H // 2 + 30))
-        self.screen.blit(sub_surface, sub_rect)
+        subtitle_surface = self.font_small.render(subtitle, True, WHITE)
+        subtitle_rect = subtitle_surface.get_rect(center=(SCREEN_W // 2, SCREEN_H // 2 + 30))
+        self.screen.blit(subtitle_surface, subtitle_rect)
